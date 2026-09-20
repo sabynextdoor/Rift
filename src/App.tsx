@@ -11,6 +11,7 @@ import Features from './components/Features';
 import Footer from './components/Footer';
 import ParticleField from './components/ParticleField';
 import LoadingAnimation from './components/LoadingAnimation';
+import RiftLiquidThunderCursor from './components/RiftLiquidThunderCursor';
 import { ThemeProvider } from './contexts/ThemeContext';
 
 function AppContent() {
@@ -244,6 +245,7 @@ function AppContent() {
 
       <div ref={containerRef} className="min-h-screen bg-void bg-grid bg-spotlight relative">
         <ParticleField />
+        <RiftLiquidThunderCursor />
         <div className="noise-overlay" aria-hidden="true" />
 
         {/* Scroll Progress Bar */}
