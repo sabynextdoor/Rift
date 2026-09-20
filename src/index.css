@@ -146,6 +146,17 @@
     scroll-behavior: smooth;
   }
 
+  /* Hide default cursor on desktop */
+  @media (pointer: fine) {
+    body {
+      cursor: none;
+    }
+    
+    a, button, input, textarea, select, [role="button"] {
+      cursor: none;
+    }
+  }
+
   body {
     font-family: var(--font-sans);
     background-color: var(--color-canvas);
