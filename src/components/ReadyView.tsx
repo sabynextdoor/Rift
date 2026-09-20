@@ -4,6 +4,8 @@ import { QRCodeSVG } from 'qrcode.react';
 import { Copy, Check, ExternalLink, Share2, Trash2, Clock, Lock, Download, File, QrCode, CheckCircle2 } from 'lucide-react';
 import { Transfer } from '../types';
 import { formatFileSize, formatRelativeTime, getTransferUrl } from '../utils/transfer';
+import { motion as motionTokens } from '../utils/motion';
+import RiftReadyAnimation from './RiftReadyAnimation';
 
 interface ReadyViewProps {
   transfer: Transfer | null;
@@ -60,33 +62,17 @@ export default function ReadyView({ transfer, onNewTransfer }: ReadyViewProps) {
       <div className="absolute inset-0 bg-gradient-radial" />
 
       <div className="relative z-10 w-full max-w-2xl mx-auto">
-        {/* Success Header */}
+        {/* RIFT Ready Animation - Signature Moment */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-10"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: motionTokens.slow }}
+          className="mb-10"
         >
-          <motion.div
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ type: 'spring', delay: 0.2, stiffness: 200 }}
-            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-accent/10 border border-accent/20 mb-6"
-          >
-            <CheckCircle2 size={36} className="text-accent-bright" />
-          </motion.div>
-
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-success/10 border border-success/20 mb-4">
-            <CheckCircle2 size={14} className="text-success" />
-            <span className="text-caption text-success font-medium">RIFT Ready</span>
-          </div>
-
-          <h2 className="text-hero text-text-primary mb-3">
-            Your files are ready to share
-          </h2>
-          <p className="text-body text-text-secondary">
-            {transfer.files.length} file{transfer.files.length > 1 ? 's' : ''} • {formatFileSize(transfer.totalSize)}
-          </p>
+          <RiftReadyAnimation
+            fileName={transfer.files[0]?.name}
+            fileCount={transfer.files.length}
+          />
         </motion.div>
 
         {/* Link Card */}

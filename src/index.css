@@ -163,6 +163,133 @@ body {
 }
 
 /* ============================================
+   MOTION SYSTEM
+   ============================================ */
+
+/* Premium motion easing curves */
+:root {
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  
+  --duration-fast: 150ms;
+  --duration-standard: 250ms;
+  --duration-slow: 400ms;
+  --duration-brand: 800ms;
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Premium button interactions */
+.btn {
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+/* Premium card interactions */
+.card {
+  transition: all var(--duration-standard) var(--ease-out);
+}
+
+.card:hover {
+  transform: translateY(-2px);
+}
+
+/* Dropzone premium motion */
+.dropzone {
+  transition: all var(--duration-slow) var(--ease-out);
+}
+
+.dropzone.active {
+  transform: scale(1.02);
+}
+
+/* File item enter/exit */
+.file-item-enter {
+  animation: fileItemEnter var(--duration-slow) var(--ease-out);
+}
+
+@keyframes fileItemEnter {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Progress bar shimmer */
+.progress-bar::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* RIFT pulse animation */
+@keyframes rift-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.02);
+    opacity: 1;
+  }
+}
+
+.rift-pulse {
+  animation: rift-pulse 2s infinite var(--ease-in-out);
+}
+
+/* Connection line animation */
+@keyframes connection-flow {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(400%);
+  }
+}
+
+.connection-flow {
+  animation: connection-flow 1.5s infinite var(--ease-in-out);
+}
+
+/* ============================================
    TYPOGRAPHY
    ============================================ */
 

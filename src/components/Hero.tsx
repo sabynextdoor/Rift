@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, X, File, Image, Film, Music, Archive, FileText, Table, Presentation, ChevronDown, Lock, Clock, Download } from 'lucide-react';
 import { TransferFile, TransferConfig, ExpirationOption, DownloadLimit } from '../types';
 import { formatFileSize } from '../utils/transfer';
+import { motion as motionTokens, riftVariants } from '../utils/motion';
+import { MultipleFilesDropAnimation } from './FileDropAnimation';
 
 interface HeroProps {
   files: TransferFile[];
@@ -28,6 +30,8 @@ function getFileIcon(type: string) {
 export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfigChange, onStartUpload }: HeroProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [showConfig, setShowConfig] = useState(false);
+  const [showDropAnimation, setShowDropAnimation] = useState(false);
+  const [droppedFiles, setDroppedFiles] = useState<File[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const folderInputRef = useRef<HTMLInputElement>(null);
   const dropzoneRef = useRef<HTMLDivElement>(null);
@@ -65,7 +69,16 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
     e.preventDefault();
     setIsDragOver(false);
     if (e.dataTransfer.files.length > 0) {
-      onAddFiles(e.dataTransfer.files);
+      const filesArray = Array.from(e.dataTransfer.files);
+      setDroppedFiles(filesArray);
+      setShowDropAnimation(true);
+      
+      // Wait for animation to complete before adding files
+      setTimeout(() => {
+        onAddFiles(e.dataTransfer.files);
+        setShowDropAnimation(false);
+        setDroppedFiles([]);
+      }, motionTokens.slow * 1000);
     }
   }, [onAddFiles]);
 
@@ -163,6 +176,24 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
               className="hidden"
               aria-label="Select folder"
             />
+
+            {/* File Drop Animation Overlay */}
+            <AnimatePresence>
+              {showDropAnimation && droppedFiles.length > 0 && (
+                <motion.div
+                  className="absolute inset-0 z-20 flex items-center justify-center bg-void/80 backdrop-blur-sm rounded-2xl"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: motionTokens.fast }}
+                >
+                  <MultipleFilesDropAnimation
+                    files={droppedFiles}
+                    onComplete={() => {}}
+                  />
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             {files.length === 0 ? (
               <div className="relative z-10">
