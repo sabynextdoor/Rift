@@ -6,6 +6,7 @@ import { Transfer } from '../types';
 import { formatFileSize, formatRelativeTime, getTransferUrl } from '../utils/transfer';
 import ThunderFlash from './ThunderFlash';
 import { useThunderFlash } from '../hooks/useThunderFlash';
+import { useRiftWink } from '../hooks/useRiftWink';
 
 interface ReadyViewProps {
   transfer: Transfer | null;
@@ -17,6 +18,7 @@ export default function ReadyView({ transfer, onNewTransfer }: ReadyViewProps) {
   const [showQR, setShowQR] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const { trigger: thunderTrigger, flash: triggerThunder } = useThunderFlash();
+  const { triggerWink } = useRiftWink();
 
   // Trigger thunder flash when transfer is ready
   useEffect(() => {
@@ -37,6 +39,7 @@ export default function ReadyView({ transfer, onNewTransfer }: ReadyViewProps) {
       await navigator.clipboard.writeText(transferUrl);
       setCopied(true);
       triggerThunder(); // Micro thunder flash on copy
+      triggerWink(); // Random wink animation
       setTimeout(() => setCopied(false), 2500);
     } catch {
       if (inputRef.current) {
@@ -44,6 +47,7 @@ export default function ReadyView({ transfer, onNewTransfer }: ReadyViewProps) {
         document.execCommand('copy');
         setCopied(true);
         triggerThunder(); // Micro thunder flash on copy
+        triggerWink(); // Random wink animation
         setTimeout(() => setCopied(false), 2500);
       }
     }
