@@ -1,40 +1,36 @@
 import { useState, useRef } from 'react';
 
 // Configuration
-const WINK_CHANCE = 0.40; // 40% chance - much more visible!
-const COOLDOWN_MS = 3000; // 3 seconds cooldown - can wink again sooner
+const COOLDOWN_MS = 1000; // 1 second cooldown - prevents spam but allows frequent winks
 
 export function useRiftWink() {
   const [shouldWink, setShouldWink] = useState(false);
   const lastWinkTime = useRef(0);
-  const cooldownTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const triggerWink = () => {
     const now = Date.now();
     const timeSinceLastWink = now - lastWinkTime.current;
 
-    // Check cooldown
+    // Check cooldown to prevent spam
     if (timeSinceLastWink < COOLDOWN_MS) {
       return;
     }
 
-    // Random chance
-    if (Math.random() < WINK_CHANCE) {
-      setShouldWink(true);
-      lastWinkTime.current = now;
+    // Always trigger wink on eligible interaction
+    setShouldWink(true);
+    lastWinkTime.current = now;
 
-      // Reset after animation completes (~850ms)
-      setTimeout(() => {
-        setShouldWink(false);
-      }, 850);
-    }
+    // Reset after animation completes (~850ms)
+    setTimeout(() => {
+      setShouldWink(false);
+    }, 850);
   };
 
   const forceWink = () => {
     const now = Date.now();
     const timeSinceLastWink = now - lastWinkTime.current;
 
-    // Still respect cooldown for forced winks
+    // Respect cooldown even for forced winks
     if (timeSinceLastWink < COOLDOWN_MS) {
       return;
     }
