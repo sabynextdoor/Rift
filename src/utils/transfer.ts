@@ -179,10 +179,12 @@ export function encodeTransferForUrl(transfer: Transfer): string {
   
   try {
     const json = JSON.stringify(data);
-    // Use encodeURIComponent on the base64 to handle + and / chars
-    const base64 = btoa(unescape(encodeURIComponent(json)));
-    return encodeURIComponent(base64);
-  } catch {
+    // Use base64 encoding with URL-safe characters
+    const base64 = btoa(json);
+    // Replace + and / with URL-safe alternatives
+    return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+  } catch (error) {
+    console.error('Failed to encode transfer:', error);
     return '';
   }
 }
@@ -190,8 +192,14 @@ export function encodeTransferForUrl(transfer: Transfer): string {
 // Decode transfer data from URL
 export function decodeTransferFromUrl(encoded: string): Transfer | null {
   try {
-    const base64 = decodeURIComponent(encoded);
-    const json = decodeURIComponent(escape(atob(base64)));
+    // Restore URL-safe base64 characters
+    let base64 = encoded.replace(/-/g, '+').replace(/_/g, '/');
+    // Add padding if needed
+    while (base64.length % 4) {
+      base64 += '=';
+    }
+    
+    const json = atob(base64);
     const data = JSON.parse(json);
     
     return {
@@ -217,7 +225,8 @@ export function decodeTransferFromUrl(encoded: string): Transfer | null {
       expiresAt: new Date(data.ea),
       downloadCount: 0,
     };
-  } catch {
+  } catch (error) {
+    console.error('Failed to decode transfer:', error);
     return null;
   }
 }
@@ -268,7 +277,10 @@ export function getTransfer(publicId: string): Transfer | null {
 export function getTransferUrl(transfer: Transfer): string {
   const baseUrl = window.location.origin + window.location.pathname;
   const encoded = encodeTransferForUrl(transfer);
-  return `${baseUrl}?t=${transfer.publicId}&d=${encoded}`;
+  const params = new URLSearchParams();
+  params.set('t', transfer.publicId);
+  params.set('d', encoded);
+  return `${baseUrl}?${params.toString()}`;
 }
 
 // Delete transfer

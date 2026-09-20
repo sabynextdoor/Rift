@@ -35,16 +35,25 @@ function App() {
       const transferId = params.get('t');
       const encodedData = params.get('d');
 
+      console.log('Checking URL:', { transferId, encodedData: encodedData?.substring(0, 50) });
+
       if (transferId) {
         let foundTransfer: Transfer | null = null;
 
         // Try to decode from URL parameter first (works across browsers/devices)
         if (encodedData) {
+          console.log('Attempting to decode from URL...');
           foundTransfer = decodeTransferFromUrl(encodedData);
+          if (foundTransfer) {
+            console.log('Successfully decoded transfer from URL');
+          } else {
+            console.error('Failed to decode transfer from URL');
+          }
         }
 
         // Fallback: try localStorage
         if (!foundTransfer) {
+          console.log('Trying localStorage fallback...');
           const stored = localStorage.getItem(`rift_transfer_${transferId}`);
           if (stored) {
             try {
@@ -52,8 +61,9 @@ function App() {
               parsed.createdAt = new Date(parsed.createdAt);
               parsed.expiresAt = new Date(parsed.expiresAt);
               foundTransfer = parsed;
-            } catch {
-              // ignore
+              console.log('Found transfer in localStorage');
+            } catch (error) {
+              console.error('Failed to parse localStorage data:', error);
             }
           }
         }
@@ -63,6 +73,7 @@ function App() {
           setTransferNotFound(false);
           setView('recipient');
         } else {
+          console.error('Transfer not found in URL or localStorage');
           setRecipientTransfer(null);
           setTransferNotFound(true);
           setView('recipient');
@@ -156,7 +167,11 @@ function App() {
       // Update URL with transfer ID and encoded data
       const baseUrl = window.location.origin + window.location.pathname;
       const encoded = encodeTransferForUrl(newTransfer);
-      window.history.pushState({}, '', `${baseUrl}?t=${newTransfer.publicId}&d=${encoded}`);
+      // Use URLSearchParams for proper encoding
+      const params = new URLSearchParams();
+      params.set('t', newTransfer.publicId);
+      params.set('d', encoded);
+      window.history.pushState({}, '', `${baseUrl}?${params.toString()}`);
 
       setTimeout(() => setView('ready'), 800);
     }
