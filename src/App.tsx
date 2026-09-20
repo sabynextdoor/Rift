@@ -10,8 +10,9 @@ import RecipientView from './components/RecipientView';
 import Features from './components/Features';
 import Footer from './components/Footer';
 import ParticleField from './components/ParticleField';
+import { ThemeProvider } from './contexts/ThemeContext';
 
-function App() {
+function AppContent() {
   const [view, setView] = useState<AppView>('landing');
   const [files, setFiles] = useState<TransferFile[]>([]);
   const [config, setConfig] = useState<TransferConfig>({
@@ -265,6 +266,14 @@ function App() {
 
       {view === 'landing' && <Footer />}
     </div>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
 

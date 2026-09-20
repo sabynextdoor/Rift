@@ -5,40 +5,68 @@
    ============================================ */
 
 @theme {
-  /* Core Colors - Sophisticated near-black foundation */
+  /* Dark Mode (Default) */
   --color-void: #050505;
   --color-surface-0: #070707;
   --color-surface-1: #0B0B0D;
   --color-surface-2: #101012;
   --color-surface-3: #161618;
   
-  /* Text Hierarchy */
   --color-text-primary: #F5F5F5;
   --color-text-secondary: #9A9A9F;
   --color-text-tertiary: #64646B;
   --color-text-muted: #3F3F46;
   
-  /* Accent - Restrained violet */
   --color-accent: #7C5CFC;
   --color-accent-bright: #9178FF;
   --color-accent-deep: #5A3DE8;
   --color-accent-glow: rgba(124, 92, 252, 0.15);
   
-  /* Semantic Colors */
   --color-success: #10B981;
   --color-warning: #F59E0B;
   --color-error: #EF4444;
   --color-info: #3B82F6;
   
-  /* Borders */
   --color-border: rgba(255, 255, 255, 0.08);
   --color-border-hover: rgba(255, 255, 255, 0.16);
   --color-border-active: rgba(255, 255, 255, 0.24);
   
-  /* Glass Effects */
   --color-glass: rgba(11, 11, 13, 0.8);
   --color-glass-border: rgba(255, 255, 255, 0.1);
+}
+
+/* Light Mode Theme */
+[data-theme="light"] {
+  --color-void: #FFFFFF;
+  --color-surface-0: #FBFBFB;
+  --color-surface-1: #F5F5F7;
+  --color-surface-2: #E8E8ED;
+  --color-surface-3: #D2D2D7;
   
+  --color-text-primary: #1D1D1F;
+  --color-text-secondary: #6E6E73;
+  --color-text-tertiary: #86868B;
+  --color-text-muted: #AEAEB2;
+  
+  --color-accent: #6B4FFF;
+  --color-accent-bright: #7C5CFC;
+  --color-accent-deep: #5A3DE8;
+  --color-accent-glow: rgba(107, 79, 255, 0.12);
+  
+  --color-success: #059669;
+  --color-warning: #D97706;
+  --color-error: #DC2626;
+  --color-info: #2563EB;
+  
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-border-hover: rgba(0, 0, 0, 0.16);
+  --color-border-active: rgba(0, 0, 0, 0.24);
+  
+  --color-glass: rgba(255, 255, 255, 0.8);
+  --color-glass-border: rgba(0, 0, 0, 0.1);
+}
+
+@theme {
   /* Typography */
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
@@ -124,6 +152,12 @@ body {
   color: var(--color-text-primary);
   overflow-x: hidden;
   line-height: 1.5;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Smooth theme transitions */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.2s ease;
 }
 
 /* ============================================
@@ -192,15 +226,15 @@ body {
 
 .bg-grid {
   background-image: 
-    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+    linear-gradient(var(--color-border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--color-border) 1px, transparent 1px);
   background-size: 64px 64px;
 }
 
 .bg-gradient-radial {
   background: radial-gradient(
     ellipse 80% 50% at 50% 0%,
-    rgba(124, 92, 252, 0.08) 0%,
+    var(--color-accent-glow) 0%,
     transparent 50%
   );
 }

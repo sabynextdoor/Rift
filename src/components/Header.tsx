@@ -1,5 +1,6 @@
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { AppView } from '../types';
+import ThemeToggle from './ThemeToggle';
 
 interface HeaderProps {
   view: AppView;
@@ -8,9 +9,9 @@ interface HeaderProps {
 
 export default function Header({ view, onReset }: HeaderProps) {
   const { scrollY } = useScroll();
-  const headerBg = useTransform(scrollY, [0, 100], ['rgba(5, 5, 5, 0)', 'rgba(5, 5, 5, 0.8)']);
+  const headerBg = useTransform(scrollY, [0, 100], ['var(--color-glass)', 'var(--color-glass)']);
   const headerBlur = useTransform(scrollY, [0, 100], ['blur(0px)', 'blur(20px)']);
-  const headerBorder = useTransform(scrollY, [0, 100], ['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.08)']);
+  const headerBorder = useTransform(scrollY, [0, 100], ['transparent', 'var(--color-border)']);
 
   return (
     <motion.header
@@ -59,7 +60,7 @@ export default function Header({ view, onReset }: HeaderProps) {
             )}
           </nav>
 
-          {/* Status */}
+          {/* Status & Theme Toggle */}
           <div className="flex items-center gap-3">
             {view !== 'landing' && (
               <motion.button
@@ -80,6 +81,7 @@ export default function Header({ view, onReset }: HeaderProps) {
               <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
               <span className="text-caption text-text-secondary font-medium">Secure</span>
             </motion.div>
+            <ThemeToggle />
           </div>
         </div>
       </motion.div>
