@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { motion, AnimatePresence, useScroll } from 'framer-motion';
 import { AppView, TransferFile, TransferConfig, Transfer } from './types';
-import { generateFileId, validateFile, simulateUpload, createTransfer, storeTransfer, getTransfer } from './utils/transfer';
+import { generateFileId, validateFile, simulateUpload, createTransfer, storeTransfer, decodeTransferFromUrl, encodeTransferForUrl } from './utils/transfer';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import UploadView from './components/UploadView';
@@ -21,6 +21,7 @@ function App() {
   });
   const [transfer, setTransfer] = useState<Transfer | null>(null);
   const [recipientTransfer, setRecipientTransfer] = useState<Transfer | null>(null);
+  const [transferNotFound, setTransferNotFound] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -32,14 +33,38 @@ function App() {
     const checkUrl = () => {
       const params = new URLSearchParams(window.location.search);
       const transferId = params.get('t');
+      const encodedData = params.get('d');
+
       if (transferId) {
-        const t = getTransfer(transferId);
-        if (t) {
-          setRecipientTransfer(t);
+        let foundTransfer: Transfer | null = null;
+
+        // Try to decode from URL parameter first (works across browsers/devices)
+        if (encodedData) {
+          foundTransfer = decodeTransferFromUrl(encodedData);
+        }
+
+        // Fallback: try localStorage
+        if (!foundTransfer) {
+          const stored = localStorage.getItem(`rift_transfer_${transferId}`);
+          if (stored) {
+            try {
+              const parsed = JSON.parse(stored);
+              parsed.createdAt = new Date(parsed.createdAt);
+              parsed.expiresAt = new Date(parsed.expiresAt);
+              foundTransfer = parsed;
+            } catch {
+              // ignore
+            }
+          }
+        }
+
+        if (foundTransfer) {
+          setRecipientTransfer(foundTransfer);
+          setTransferNotFound(false);
           setView('recipient');
         } else {
-          // Transfer not found in localStorage - show error in recipient view
           setRecipientTransfer(null);
+          setTransferNotFound(true);
           setView('recipient');
         }
       }
@@ -128,10 +153,10 @@ function App() {
       storeTransfer(newTransfer);
       setTransfer(newTransfer);
 
-      // Update URL with transfer ID
-      const url = new URL(window.location.href);
-      url.searchParams.set('t', newTransfer.publicId);
-      window.history.pushState({}, '', url.toString());
+      // Update URL with transfer ID and encoded data
+      const baseUrl = window.location.origin + window.location.pathname;
+      const encoded = encodeTransferForUrl(newTransfer);
+      window.history.pushState({}, '', `${baseUrl}?t=${newTransfer.publicId}&d=${encoded}`);
 
       setTimeout(() => setView('ready'), 800);
     }
@@ -141,9 +166,9 @@ function App() {
     setFiles([]);
     setTransfer(null);
     setRecipientTransfer(null);
+    setTransferNotFound(false);
     setConfig({ expiration: '24h', password: '', downloadLimit: 'unlimited' });
     setView('landing');
-    // Clear URL params
     window.history.pushState({}, '', window.location.pathname);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
@@ -183,6 +208,7 @@ function App() {
         return (
           <RecipientView
             transfer={recipientTransfer}
+            notFound={transferNotFound}
           />
         );
       default:

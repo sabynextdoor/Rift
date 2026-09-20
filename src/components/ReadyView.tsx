@@ -1,9 +1,9 @@
 import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QRCodeSVG } from 'qrcode.react';
-import { Copy, Check, ExternalLink, Share2, Trash2, Clock, Lock, Download, File, Link2, QrCode, CheckCircle2 } from 'lucide-react';
+import { Copy, Check, ExternalLink, Share2, Trash2, Clock, Lock, Download, File, QrCode, CheckCircle2 } from 'lucide-react';
 import { Transfer } from '../types';
-import { formatFileSize, formatRelativeTime } from '../utils/transfer';
+import { formatFileSize, formatRelativeTime, getTransferUrl } from '../utils/transfer';
 
 interface ReadyViewProps {
   transfer: Transfer | null;
@@ -13,14 +13,12 @@ interface ReadyViewProps {
 export default function ReadyView({ transfer, onNewTransfer }: ReadyViewProps) {
   const [copied, setCopied] = useState(false);
   const [showQR, setShowQR] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(true);
   const inputRef = useRef<HTMLInputElement>(null);
 
   if (!transfer) return null;
 
-  // Build the transfer URL - use hash-based routing for better compatibility
-  const baseUrl = window.location.origin + window.location.pathname;
-  const transferUrl = `${baseUrl}?t=${transfer.publicId}`;
+  // Build the transfer URL with encoded data (works across browsers/devices)
+  const transferUrl = getTransferUrl(transfer);
 
   const handleCopy = async () => {
     try {

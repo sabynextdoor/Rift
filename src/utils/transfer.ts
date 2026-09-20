@@ -158,31 +158,117 @@ export function createTransfer(files: TransferFile[], config: TransferConfig): T
   };
 }
 
-// Store transfer in localStorage
+// Encode transfer data for URL (works across browsers/devices)
+export function encodeTransferForUrl(transfer: Transfer): string {
+  const data = {
+    id: transfer.publicId,
+    f: transfer.files.map(f => ({
+      n: f.name,
+      s: f.size,
+      t: f.type,
+    })),
+    c: {
+      e: transfer.config.expiration,
+      p: transfer.config.password ? '1' : '0',
+      d: transfer.config.downloadLimit,
+    },
+    ts: transfer.totalSize,
+    ca: transfer.createdAt.toISOString(),
+    ea: transfer.expiresAt.toISOString(),
+  };
+  
+  try {
+    const json = JSON.stringify(data);
+    // Use encodeURIComponent on the base64 to handle + and / chars
+    const base64 = btoa(unescape(encodeURIComponent(json)));
+    return encodeURIComponent(base64);
+  } catch {
+    return '';
+  }
+}
+
+// Decode transfer data from URL
+export function decodeTransferFromUrl(encoded: string): Transfer | null {
+  try {
+    const base64 = decodeURIComponent(encoded);
+    const json = decodeURIComponent(escape(atob(base64)));
+    const data = JSON.parse(json);
+    
+    return {
+      id: data.id,
+      publicId: data.id,
+      files: data.f.map((f: any) => ({
+        id: generateFileId(),
+        name: f.n,
+        size: f.s,
+        type: f.t,
+        progress: 100,
+        status: 'READY' as const,
+        file: null as any, // File objects can't be encoded
+      })),
+      config: {
+        expiration: data.c.e,
+        password: data.c.p === '1' ? 'protected' : '',
+        downloadLimit: data.c.d,
+      },
+      status: 'READY',
+      totalSize: data.ts,
+      createdAt: new Date(data.ca),
+      expiresAt: new Date(data.ea),
+      downloadCount: 0,
+    };
+  } catch {
+    return null;
+  }
+}
+
+// Store transfer in localStorage (backup for same-browser)
 export function storeTransfer(transfer: Transfer): void {
+  const encoded = encodeTransferForUrl(transfer);
   const data = JSON.stringify({
     ...transfer,
     files: transfer.files.map(f => ({
       ...f,
-      file: undefined, // Can't serialize File objects
+      file: undefined,
     })),
+    encoded,
   });
   localStorage.setItem(`rift_transfer_${transfer.publicId}`, data);
 }
 
-// Retrieve transfer from localStorage
+// Retrieve transfer - tries localStorage first, then URL
 export function getTransfer(publicId: string): Transfer | null {
+  // Try localStorage first
   const data = localStorage.getItem(`rift_transfer_${publicId}`);
-  if (!data) return null;
-  
-  try {
-    const transfer = JSON.parse(data);
-    transfer.createdAt = new Date(transfer.createdAt);
-    transfer.expiresAt = new Date(transfer.expiresAt);
-    return transfer;
-  } catch {
-    return null;
+  if (data) {
+    try {
+      const transfer = JSON.parse(data);
+      transfer.createdAt = new Date(transfer.createdAt);
+      transfer.expiresAt = new Date(transfer.expiresAt);
+      return transfer;
+    } catch {
+      // Fall through to URL decoding
+    }
   }
+  
+  // Try URL parameter
+  const params = new URLSearchParams(window.location.search);
+  const encoded = params.get('d');
+  if (encoded) {
+    const transfer = decodeTransferFromUrl(encoded);
+    if (transfer && transfer.publicId === publicId) {
+      return transfer;
+    }
+  }
+  
+  return null;
+}
+
+// Get transfer URL with encoded data
+export function getTransferUrl(transfer: Transfer): string {
+  const baseUrl = window.location.origin + window.location.pathname;
+  const encoded = encodeTransferForUrl(transfer);
+  return `${baseUrl}?t=${transfer.publicId}&d=${encoded}`;
 }
 
 // Delete transfer
