@@ -22,7 +22,7 @@ function getFileIcon(type: string) {
   if (type.includes('word') || type.includes('document')) return <FileText size={16} className="text-blue-400" />;
   if (type.includes('sheet') || type.includes('excel') || type.includes('csv')) return <Table size={16} className="text-green-400" />;
   if (type.includes('presentation') || type.includes('powerpoint')) return <Presentation size={16} className="text-orange-400" />;
-  return <File size={16} className="text-text-muted" />;
+  return <File size={16} className="text-fog" />;
 }
 
 export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfigChange, onStartUpload }: HeroProps) {
@@ -39,8 +39,9 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
   });
 
   const heroY = useTransform(scrollYProgress, [0, 1], [0, -100]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const heroScale = useTransform(scrollYProgress, [0, 0.5], [1, 0.95]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  const heroScale = useTransform(scrollYProgress, [0, 0.6], [1, 0.95]);
+  const heroRotateX = useTransform(scrollYProgress, [0, 1], [0, 8]);
 
   // Mouse parallax
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -86,7 +87,7 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
       ref={heroRef}
       className="relative min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-20 overflow-hidden"
     >
-      {/* Ambient violet glow */}
+      {/* 3D Ambient layers */}
       <motion.div
         className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-violet/5 rounded-full blur-[150px] pointer-events-none"
         style={{
@@ -94,14 +95,42 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
           y: mousePos.y * 0.5,
         }}
       />
+      <motion.div
+        className="absolute top-1/3 right-1/4 w-[400px] h-[400px] bg-violet-deep/3 rounded-full blur-[100px] pointer-events-none"
+        style={{
+          x: mousePos.x * -0.3,
+          y: mousePos.y * -0.3,
+        }}
+      />
+
+      {/* 3D Floating orbs */}
+      <motion.div
+        className="absolute top-20 left-[15%] w-3 h-3 rounded-full bg-violet-bright/30 blur-[1px]"
+        animate={{
+          y: [0, -20, 0],
+          x: [0, 10, 0],
+          opacity: [0.3, 0.7, 0.3],
+        }}
+        transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="absolute top-40 right-[20%] w-2 h-2 rounded-full bg-violet/40 blur-[1px]"
+        animate={{
+          y: [0, -15, 0],
+          x: [0, -8, 0],
+          opacity: [0.4, 0.8, 0.4],
+        }}
+        transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+      />
 
       {/* Content with 3D scroll transform */}
       <motion.div
-        className="relative z-10 w-full max-w-4xl mx-auto text-center"
+        className="relative z-10 w-full max-w-3xl mx-auto text-center"
         style={{
           y: heroY,
           opacity: heroOpacity,
           scale: heroScale,
+          rotateX: heroRotateX,
           transformStyle: 'preserve-3d',
         }}
       >
@@ -110,40 +139,36 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2 }}
-          className="section-eyebrow mb-8"
+          className="section-eyebrow mb-6"
         >
           Secure File Transfers
         </motion.div>
 
-        {/* Massive Condensed Display Headline */}
+        {/* Headline - Space Grotesk display */}
         <motion.h1
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="headline-condensed mb-8"
-          style={{
-            fontSize: 'clamp(3.5rem, 12vw, 10rem)',
-            letterSpacing: '0.03em',
-          }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+          className="font-display text-5xl sm:text-6xl md:text-7xl font-medium tracking-tight leading-[1.05] mb-6"
         >
           <motion.span
-            className="block text-text-primary"
+            className="text-gradient block"
             style={{
-              x: mousePos.x * 0.08,
-              y: mousePos.y * 0.08,
+              x: mousePos.x * 0.1,
+              y: mousePos.y * 0.1,
             }}
           >
-            SEND FILES.
+            Send files.
           </motion.span>
           <motion.span
-            className="block text-text-secondary mt-2"
+            className="text-frost/80 block mt-2"
             style={{
-              fontSize: '0.6em',
-              x: mousePos.x * 0.04,
-              y: mousePos.y * 0.04,
+              x: mousePos.x * 0.05,
+              y: mousePos.y * 0.05,
             }}
           >
-            SHARE A LINK. DONE.
+            Share a link.{' '}
+            <span className="text-frost/50">Done.</span>
           </motion.span>
         </motion.h1>
 
@@ -152,12 +177,12 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="text-text-secondary text-lg font-light max-w-lg mx-auto mb-14 leading-relaxed"
+          className="text-moon text-lg font-light max-w-lg mx-auto mb-14 leading-relaxed"
         >
           Transfer files securely with expiring links, optional passwords, and download limits. No account required.
         </motion.p>
 
-        {/* Upload Zone - Dark glassy */}
+        {/* Upload Zone */}
         <motion.div
           initial={{ opacity: 0, y: 30, rotateX: 6 }}
           animate={{ opacity: 1, y: 0, rotateX: 0 }}
@@ -192,15 +217,15 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
               <motion.div
                 animate={{ y: [0, -6, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-violet/5 border border-violet/10 mb-8"
+                className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-violet/10 border border-violet/20 mb-8"
               >
                 <Upload size={28} className="text-violet-bright" />
               </motion.div>
 
-              <p className="text-text-primary text-xl font-medium mb-3">
+              <p className="text-frost text-xl font-medium mb-3">
                 Drop files here
               </p>
-              <p className="text-text-muted text-sm mb-8">
+              <p className="text-fog text-sm mb-8">
                 or choose an option below
               </p>
 
@@ -223,7 +248,7 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
                 </motion.button>
               </div>
 
-              <p className="text-text-faint text-xs mt-8">
+              <p className="text-ash text-xs mt-8">
                 Up to 5GB per file • Multiple files supported • All types accepted
               </p>
             </div>
@@ -239,18 +264,18 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: 20, height: 0 }}
                       transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                      className="flex items-center gap-3 p-3 rounded-lg bg-surface-2/50 border border-border group"
+                      className="flex items-center gap-3 p-3 rounded-xl bg-surface-1/50 border border-glass-border group"
                     >
                       <div className="flex-shrink-0">
                         {getFileIcon(file.type)}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-text-primary truncate">{file.name}</p>
-                        <p className="text-xs text-text-muted">{formatFileSize(file.size)}</p>
+                        <p className="text-sm text-frost truncate">{file.name}</p>
+                        <p className="text-xs text-fog">{formatFileSize(file.size)}</p>
                       </div>
                       <button
                         onClick={() => onRemoveFile(file.id)}
-                        className="flex-shrink-0 p-1.5 rounded-lg hover:bg-white/5 text-text-muted hover:text-text-primary transition-colors opacity-0 group-hover:opacity-100"
+                        className="flex-shrink-0 p-1.5 rounded-lg hover:bg-white/5 text-fog hover:text-frost transition-colors opacity-0 group-hover:opacity-100"
                         aria-label={`Remove ${file.name}`}
                       >
                         <X size={14} />
@@ -261,10 +286,10 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
               </div>
 
               {/* Summary */}
-              <div className="flex items-center justify-between mb-4 pt-4 border-t border-border">
+              <div className="flex items-center justify-between mb-4 pt-4 border-t border-glass-border">
                 <div className="text-sm">
-                  <span className="text-text-primary font-medium">{files.length} file{files.length > 1 ? 's' : ''}</span>
-                  <span className="text-text-muted ml-2">• {formatFileSize(totalSize)}</span>
+                  <span className="text-frost font-medium">{files.length} file{files.length > 1 ? 's' : ''}</span>
+                  <span className="text-fog ml-2">• {formatFileSize(totalSize)}</span>
                 </div>
                 <button
                   onClick={() => fileInputRef.current?.click()}
@@ -277,7 +302,7 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
               {/* Transfer Config Toggle */}
               <button
                 onClick={() => setShowConfig(!showConfig)}
-                className="flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary transition-colors mb-4"
+                className="flex items-center gap-2 text-sm text-moon hover:text-frost transition-colors mb-4"
               >
                 <span>Transfer settings</span>
                 <motion.div animate={{ rotate: showConfig ? 180 : 0 }}>
@@ -294,10 +319,10 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
                     exit={{ opacity: 0, height: 0 }}
                     className="overflow-hidden mb-6"
                   >
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-xl bg-surface-2/30 border border-border">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-4 rounded-xl bg-surface-1/30 border border-glass-border">
                       {/* Expiration */}
                       <div>
-                        <label className="flex items-center gap-1.5 text-xs text-text-muted mb-2">
+                        <label className="flex items-center gap-1.5 text-xs text-fog mb-2">
                           <Clock size={12} />
                           Expires in
                         </label>
@@ -315,7 +340,7 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
 
                       {/* Password */}
                       <div>
-                        <label className="flex items-center gap-1.5 text-xs text-text-muted mb-2">
+                        <label className="flex items-center gap-1.5 text-xs text-fog mb-2">
                           <Lock size={12} />
                           Password (optional)
                         </label>
@@ -330,7 +355,7 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
 
                       {/* Download Limit */}
                       <div>
-                        <label className="flex items-center gap-1.5 text-xs text-text-muted mb-2">
+                        <label className="flex items-center gap-1.5 text-xs text-fog mb-2">
                           <Download size={12} />
                           Download limit
                         </label>
@@ -378,8 +403,8 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
               { value: '0', label: 'Accounts needed' },
             ].map((stat, i) => (
               <div key={i} className="text-center">
-                <div className="text-xl font-display font-medium text-text-primary">{stat.value}</div>
-                <div className="text-xs text-text-muted mt-0.5">{stat.label}</div>
+                <div className="text-xl font-display font-medium text-frost">{stat.value}</div>
+                <div className="text-xs text-fog mt-0.5">{stat.label}</div>
               </div>
             ))}
           </motion.div>
@@ -398,7 +423,7 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
             { icon: '🛡', text: 'Malware scanned' },
             { icon: '⚡', text: 'No account needed' },
           ].map((item, i) => (
-            <div key={i} className="flex items-center gap-2 text-xs text-text-muted">
+            <div key={i} className="flex items-center gap-2 text-xs text-fog">
               <span>{item.icon}</span>
               <span>{item.text}</span>
             </div>
@@ -419,8 +444,8 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
             transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
             className="flex flex-col items-center gap-2"
           >
-            <span className="text-xs text-text-faint">Scroll to explore</span>
-            <svg width="16" height="24" viewBox="0 0 16 24" fill="none" className="text-text-faint">
+            <span className="text-xs text-fog/40">Scroll to explore</span>
+            <svg width="16" height="24" viewBox="0 0 16 24" fill="none" className="text-fog/20">
               <path d="M8 4V20M8 20L2 14M8 20L14 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </motion.div>

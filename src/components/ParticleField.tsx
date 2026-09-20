@@ -32,14 +32,14 @@ export default function ParticleField() {
     resize();
     window.addEventListener('resize', resize);
 
-    // Dark glassy color palette - subtle violet
+    // Premium violet color palette
     const colors = [
-      'rgba(139, 92, 246, 0.3)',   // violet
-      'rgba(167, 139, 250, 0.25)', // violet bright
-      'rgba(109, 40, 217, 0.2)',   // violet deep
-      'rgba(139, 92, 246, 0.15)',  // violet subtle
-      'rgba(167, 139, 250, 0.1)',  // violet faint
-      'rgba(139, 92, 246, 0.08)',  // violet ghost
+      'rgba(124, 92, 252, 0.5)',   // violet
+      'rgba(139, 111, 255, 0.4)',  // violet bright
+      'rgba(167, 139, 250, 0.3)',  // violet light
+      'rgba(90, 61, 232, 0.3)',    // violet deep
+      'rgba(216, 236, 248, 0.15)', // ice
+      'rgba(186, 215, 247, 0.1)',  // frost
     ];
 
     const PARTICLE_COUNT = 50;
@@ -121,7 +121,7 @@ export default function ParticleField() {
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(139, 92, 246, ${opacity * 0.5})`;
+            ctx.strokeStyle = `rgba(124, 92, 252, ${opacity})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }

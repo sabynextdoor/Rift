@@ -56,17 +56,17 @@ function FeatureCard({ feature, index }: { feature: typeof features[0]; index: n
         z: 20,
         transition: { duration: 0.3 }
       }}
-      className="glass-card p-6 group hover:bg-white/[0.03] transition-colors"
+      className="glass-card rounded-2xl p-6 group hover:bg-glass-fill-hover transition-colors"
       style={{ transformStyle: 'preserve-3d' }}
     >
       <motion.div
-        className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-violet/5 border border-violet/10 mb-5 group-hover:bg-violet/10 transition-colors"
+        className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-violet/10 border border-violet/20 mb-5 group-hover:bg-violet/20 transition-colors"
         style={{ transform: 'translateZ(20px)' }}
       >
         <feature.icon size={20} className="text-violet-bright" />
       </motion.div>
-      <h3 className="text-text-primary font-medium text-base mb-2" style={{ transform: 'translateZ(10px)' }}>{feature.title}</h3>
-      <p className="text-text-secondary text-sm leading-relaxed" style={{ transform: 'translateZ(5px)' }}>{feature.description}</p>
+      <h3 className="text-frost font-medium text-base mb-2" style={{ transform: 'translateZ(10px)' }}>{feature.title}</h3>
+      <p className="text-fog text-sm leading-relaxed" style={{ transform: 'translateZ(5px)' }}>{feature.description}</p>
     </motion.div>
   );
 }
@@ -98,7 +98,7 @@ function HowItWorksStep({ step, icon: Icon, title, description, index, isLast }:
     >
       <motion.div
         whileHover={{ scale: 1.05, y: -5 }}
-        className="glass-card-elevated p-6 h-full"
+        className="glass-card-elevated rounded-2xl p-6 h-full"
         style={{ transformStyle: 'preserve-3d' }}
       >
         <div className="flex items-center gap-3 mb-4">
@@ -106,13 +106,13 @@ function HowItWorksStep({ step, icon: Icon, title, description, index, isLast }:
           <div className="flex-1 h-px bg-gradient-to-r from-violet/20 to-transparent" />
         </div>
         <motion.div
-          className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-violet/5 border border-violet/10 mb-4"
+          className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-violet/10 border border-violet/20 mb-4"
           style={{ transform: 'translateZ(30px)' }}
         >
           <Icon size={20} className="text-violet-bright" />
         </motion.div>
-        <h4 className="text-text-primary font-medium text-lg mb-2" style={{ transform: 'translateZ(15px)' }}>{title}</h4>
-        <p className="text-text-secondary text-sm leading-relaxed" style={{ transform: 'translateZ(8px)' }}>{description}</p>
+        <h4 className="text-frost font-medium text-lg mb-2" style={{ transform: 'translateZ(15px)' }}>{title}</h4>
+        <p className="text-fog text-sm leading-relaxed" style={{ transform: 'translateZ(8px)' }}>{description}</p>
       </motion.div>
       {!isLast && (
         <div className="hidden md:flex absolute top-1/2 -right-4 transform -translate-y-1/2 z-10">
@@ -120,7 +120,7 @@ function HowItWorksStep({ step, icon: Icon, title, description, index, isLast }:
             animate={{ x: [0, 5, 0] }}
             transition={{ duration: 1.5, repeat: Infinity }}
           >
-            <ArrowRight size={18} className="text-violet/30" />
+            <ArrowRight size={18} className="text-violet/40" />
           </motion.div>
         </div>
       )}
@@ -136,21 +136,18 @@ export default function Features() {
   });
 
   const bgY = useTransform(scrollYProgress, [0, 1], [100, -100]);
-  const glowOpacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 0.3, 0.3, 0]);
+  const glowOpacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 0.5, 0.5, 0]);
 
   return (
     <section ref={sectionRef} id="features" className="relative py-24 md:py-32 px-6 overflow-hidden">
-      {/* Parallax background glow */}
       <motion.div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-violet/3 rounded-full blur-[200px] pointer-events-none"
         style={{ y: bgY, opacity: glowOpacity }}
       />
 
-      {/* Section divider */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-xl h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-xl h-px bg-gradient-to-r from-transparent via-glass-border to-transparent" />
 
       <div className="max-w-6xl mx-auto relative z-10" style={{ perspective: '1200px' }}>
-        {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 40, rotateX: 8 }}
           whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
@@ -160,24 +157,22 @@ export default function Features() {
           style={{ transformStyle: 'preserve-3d' }}
         >
           <div className="section-eyebrow mb-6">Why RIFT</div>
-          <h2 className="headline-condensed text-text-primary mb-5" style={{ fontSize: 'clamp(3rem, 8vw, 7rem)' }}>
-            BUILT FOR
+          <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-medium text-frost tracking-tight mb-5">
+            Built for secure,
             <br />
-            <span className="text-violet-bright">SECURE</span> TRANSFERS
+            <span className="text-gradient-violet">simple transfers</span>
           </h2>
-          <p className="text-text-secondary text-lg font-light max-w-xl mx-auto" style={{ fontWeight: 300 }}>
+          <p className="text-moon text-lg font-light max-w-xl mx-auto" style={{ fontWeight: 300 }}>
             Enterprise-grade security meets consumer simplicity. No compromises.
           </p>
         </motion.div>
 
-        {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-28">
           {features.map((feature, index) => (
             <FeatureCard key={feature.title} feature={feature} index={index} />
           ))}
         </div>
 
-        {/* How it works */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -193,8 +188,8 @@ export default function Features() {
             className="text-center mb-14"
           >
             <div className="section-eyebrow mb-4">How it works</div>
-            <h3 className="headline-condensed text-text-primary" style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
-              THREE STEPS
+            <h3 className="font-display text-2xl md:text-4xl font-medium text-frost tracking-tight">
+              Three steps. That's it.
             </h3>
           </motion.div>
 
@@ -232,27 +227,24 @@ export default function Features() {
           </div>
         </motion.div>
 
-        {/* Security Section */}
         <motion.div
           id="security"
           initial={{ opacity: 0, y: 50, rotateX: 6 }}
           whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="glass-card-elevated p-8 md:p-12"
+          className="glass-card-elevated rounded-3xl p-8 md:p-12"
           style={{ transformStyle: 'preserve-3d' }}
         >
           <div className="grid md:grid-cols-2 gap-10 items-center">
-            <motion.div
-              style={{ transform: 'translateZ(20px)' }}
-            >
+            <motion.div style={{ transform: 'translateZ(20px)' }}>
               <div className="section-eyebrow mb-4">Security First</div>
-              <h3 className="headline-condensed text-text-primary mb-5" style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)' }}>
-                PRODUCTION-GRADE
+              <h3 className="font-display text-2xl md:text-3xl lg:text-4xl font-medium text-frost tracking-tight mb-5">
+                Production-grade security,
                 <br />
-                <span className="text-violet-bright">SECURITY</span>
+                <span className="text-gradient">zero complexity</span>
               </h3>
-              <p className="text-text-secondary text-sm leading-relaxed mb-8">
+              <p className="text-moon text-sm leading-relaxed mb-8">
                 Every transfer is protected by industry-standard encryption, malware scanning, rate limiting, and automatic cleanup. We never store passwords in plaintext, never expose sequential IDs, and always enforce expiration server-side.
               </p>
               <div className="flex flex-wrap gap-2">
@@ -260,7 +252,7 @@ export default function Features() {
                   <motion.span
                     key={tag}
                     whileHover={{ scale: 1.05 }}
-                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-violet/5 text-violet-bright border border-violet/10"
+                    className="px-3 py-1.5 rounded-full text-xs font-medium bg-violet/10 text-violet-bright border border-violet/20"
                   >
                     {tag}
                   </motion.span>
@@ -276,7 +268,8 @@ export default function Features() {
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              <div className="glass-card p-6 space-y-5">
+              <div className="absolute inset-0 bg-violet/5 rounded-2xl blur-xl" />
+              <div className="relative glass-card rounded-2xl p-6 space-y-5">
                 {[
                   { label: 'Encryption', value: 'AES-256-GCM', status: 'active' },
                   { label: 'Malware Scan', value: 'ClamAV', status: 'active' },
@@ -291,9 +284,9 @@ export default function Features() {
                     transition={{ delay: 0.3 + i * 0.1 }}
                     className="flex items-center justify-between"
                   >
-                    <span className="text-sm text-text-secondary">{item.label}</span>
+                    <span className="text-sm text-fog">{item.label}</span>
                     <div className="flex items-center gap-3">
-                      <span className="text-sm text-text-primary font-mono font-medium">{item.value}</span>
+                      <span className="text-sm text-frost font-mono">{item.value}</span>
                       <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
                     </div>
                   </motion.div>
