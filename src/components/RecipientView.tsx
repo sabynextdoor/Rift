@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { File, Image, Film, Music, Archive, FileText, Table, Presentation, Download, Lock, Shield, Clock, AlertTriangle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { File, Image, Film, Music, Archive, FileText, Table, Presentation, Download, Lock, Shield, Clock, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { Transfer } from '../types';
 import { formatFileSize, formatRelativeTime } from '../utils/transfer';
 
@@ -25,33 +25,61 @@ export default function RecipientView({ transfer }: RecipientViewProps) {
   const [isAuthenticated, setIsAuthenticated] = useState(!transfer?.config.password);
   const [passwordError, setPasswordError] = useState('');
   const [downloading, setDownloading] = useState<string | null>(null);
+  const [downloadedFiles, setDownloadedFiles] = useState<Set<string>>(new Set());
 
+  // Not found
   if (!transfer) {
     return (
       <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-20">
-        <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-error/10 border border-error/20 mb-6">
-            <AlertTriangle size={28} className="text-error" />
-          </div>
-          <h2 className="font-display text-2xl font-medium text-frost mb-2">Transfer Not Found</h2>
-          <p className="text-moon text-sm">This transfer may have expired or been deleted.</p>
-        </div>
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-error/3 rounded-full blur-[100px] pointer-events-none" />
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center relative z-10"
+        >
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', delay: 0.2 }}
+            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-error/10 border border-error/20 mb-6"
+          >
+            <AlertTriangle size={32} className="text-error" />
+          </motion.div>
+          <h2 className="font-display text-2xl md:text-3xl font-medium text-frost mb-3">Transfer Not Found</h2>
+          <p className="text-fog text-sm max-w-sm mx-auto">
+            This transfer may have expired, been deleted, or the link is invalid. Ask the sender to create a new transfer.
+          </p>
+        </motion.div>
       </section>
     );
   }
 
   // Check if expired
-  const isExpired = new Date() > transfer.expiresAt;
+  const isExpired = new Date() > new Date(transfer.expiresAt);
   if (isExpired) {
     return (
       <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-20">
-        <div className="text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-warning/10 border border-warning/20 mb-6">
-            <Clock size={28} className="text-warning" />
-          </div>
-          <h2 className="font-display text-2xl font-medium text-frost mb-2">Transfer Expired</h2>
-          <p className="text-moon text-sm">This transfer has expired and is no longer available.</p>
-        </div>
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-warning/3 rounded-full blur-[100px] pointer-events-none" />
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="text-center relative z-10"
+        >
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', delay: 0.2 }}
+            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-warning/10 border border-warning/20 mb-6"
+          >
+            <Clock size={32} className="text-warning" />
+          </motion.div>
+          <h2 className="font-display text-2xl md:text-3xl font-medium text-frost mb-3">Transfer Expired</h2>
+          <p className="text-fog text-sm max-w-sm mx-auto">
+            This transfer has expired and all files have been permanently removed from storage.
+          </p>
+        </motion.div>
       </section>
     );
   }
@@ -63,14 +91,16 @@ export default function RecipientView({ transfer }: RecipientViewProps) {
       setPasswordError('');
     } else {
       setPasswordError('Incorrect password. Please try again.');
+      setPassword('');
     }
   };
 
   const handleDownload = (fileId: string) => {
     setDownloading(fileId);
-    // Simulate download
+    // Simulate download delay
     setTimeout(() => {
       setDownloading(null);
+      setDownloadedFiles(prev => new Set(prev).add(fileId));
     }, 1500);
   };
 
@@ -78,31 +108,41 @@ export default function RecipientView({ transfer }: RecipientViewProps) {
     setDownloading('all');
     setTimeout(() => {
       setDownloading(null);
-    }, 2000);
+      // Mark all as downloaded
+      setDownloadedFiles(new Set(transfer.files.map(f => f.id)));
+    }, 2500);
   };
 
+  // Password gate
   if (!isAuthenticated) {
     return (
       <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-20">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] bg-violet/5 rounded-full blur-[100px] pointer-events-none" />
-        
-        <div className="relative z-10 w-full max-w-sm mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="glass-card-elevated rounded-2xl p-8 text-center"
-          >
-            <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-violet/10 border border-violet/20 mb-6">
-              <Lock size={24} className="text-violet-bright" />
-            </div>
-            
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-violet/5 rounded-full blur-[120px] pointer-events-none" />
+
+        <motion.div
+          initial={{ opacity: 0, y: 30, rotateX: 8 }}
+          animate={{ opacity: 1, y: 0, rotateX: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="relative z-10 w-full max-w-sm mx-auto"
+          style={{ perspective: '1000px' }}
+        >
+          <div className="glass-card-elevated rounded-2xl p-8 text-center">
+            <motion.div
+              initial={{ scale: 0, rotate: -90 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: 'spring', delay: 0.2 }}
+              className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-violet/10 border border-violet/20 mb-6 glow-violet"
+            >
+              <Lock size={28} className="text-violet-bright" />
+            </motion.div>
+
             <h2 className="font-display text-xl font-medium text-frost mb-2">
               Password Required
             </h2>
-            <p className="text-moon text-sm mb-6">
+            <p className="text-fog text-sm mb-6">
               This transfer is password protected. Enter the password to access the files.
             </p>
-            
+
             <form onSubmit={handlePasswordSubmit}>
               <input
                 type="password"
@@ -112,15 +152,29 @@ export default function RecipientView({ transfer }: RecipientViewProps) {
                 className="input-field mb-3 text-center"
                 autoFocus
               />
-              {passwordError && (
-                <p className="text-error text-xs mb-3">{passwordError}</p>
-              )}
-              <button type="submit" className="btn-primary w-full">
+              <AnimatePresence>
+                {passwordError && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -5 }}
+                    className="text-error text-xs mb-3"
+                  >
+                    {passwordError}
+                  </motion.p>
+                )}
+              </AnimatePresence>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                type="submit"
+                className="btn-primary w-full"
+              >
                 Unlock Transfer
-              </button>
+              </motion.button>
             </form>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
       </section>
     );
   }
@@ -128,58 +182,70 @@ export default function RecipientView({ transfer }: RecipientViewProps) {
   return (
     <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-20">
       {/* Ambient glow */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-violet/5 rounded-full blur-[100px] pointer-events-none" />
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-violet/5 rounded-full blur-[150px] pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-2xl mx-auto">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
+          initial={{ opacity: 0, y: 30, rotateX: 6 }}
+          animate={{ opacity: 1, y: 0, rotateX: 0 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center mb-10"
+          style={{ perspective: '1000px' }}
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-success/10 border border-success/20 mb-4">
-            <Shield size={12} className="text-success" />
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', delay: 0.2 }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-success/10 border border-success/20 mb-5"
+          >
+            <Shield size={14} className="text-success" />
             <span className="text-xs text-success font-medium">Verified Transfer</span>
-          </div>
-          
-          <h2 className="font-display text-3xl md:text-4xl font-medium text-frost tracking-tight mb-2">
+          </motion.div>
+
+          <h2 className="font-display text-3xl md:text-4xl font-medium text-frost tracking-tight mb-3">
             Files ready for download
           </h2>
-          <p className="text-moon text-sm">
+          <p className="text-fog text-sm">
             {transfer.files.length} file{transfer.files.length > 1 ? 's' : ''} • {formatFileSize(transfer.totalSize)} • Expires {formatRelativeTime(transfer.expiresAt)}
           </p>
         </motion.div>
 
         {/* File List */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          initial={{ opacity: 0, y: 30, rotateX: 4 }}
+          animate={{ opacity: 1, y: 0, rotateX: 0 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
           className="glass-card-elevated rounded-2xl p-4 mb-6"
+          style={{ transformStyle: 'preserve-3d' }}
         >
           <div className="space-y-2">
             {transfer.files.map((file, index) => (
               <motion.div
                 key={file.id}
-                initial={{ opacity: 0, x: -10 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.1 + index * 0.05 }}
-                className="flex items-center gap-3 p-3 rounded-xl bg-surface-1/30 border border-glass-border group"
+                initial={{ opacity: 0, x: -30, rotateY: -5 }}
+                animate={{ opacity: 1, x: 0, rotateY: 0 }}
+                transition={{ delay: 0.3 + index * 0.08, type: 'spring', stiffness: 200 }}
+                className="flex items-center gap-3 p-3 rounded-xl bg-surface-1/30 border border-glass-border group hover:border-violet/20 transition-colors"
               >
                 <div className="flex-shrink-0">
                   {getFileIcon(file.type)}
                 </div>
-                
+
                 <div className="flex-1 min-w-0">
                   <p className="text-sm text-frost truncate">{file.name}</p>
                   <p className="text-xs text-fog">{formatFileSize(file.size)}</p>
                 </div>
 
                 <motion.button
-                  whileTap={{ scale: 0.95 }}
+                  whileTap={{ scale: 0.9 }}
                   onClick={() => handleDownload(file.id)}
                   disabled={downloading !== null}
-                  className="flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-lg bg-violet/10 border border-violet/20 text-violet-bright text-sm font-medium hover:bg-violet/20 transition-colors disabled:opacity-50"
+                  className={`flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
+                    downloadedFiles.has(file.id)
+                      ? 'bg-success/10 border border-success/20 text-success'
+                      : 'bg-violet/10 border border-violet/20 text-violet-bright hover:bg-violet/20'
+                  } disabled:opacity-50`}
                 >
                   {downloading === file.id ? (
                     <motion.div
@@ -188,10 +254,14 @@ export default function RecipientView({ transfer }: RecipientViewProps) {
                     >
                       <Download size={14} />
                     </motion.div>
+                  ) : downloadedFiles.has(file.id) ? (
+                    <CheckCircle2 size={14} />
                   ) : (
                     <Download size={14} />
                   )}
-                  <span className="hidden sm:inline">Download</span>
+                  <span className="hidden sm:inline">
+                    {downloadedFiles.has(file.id) ? 'Done' : 'Download'}
+                  </span>
                 </motion.button>
               </motion.div>
             ))}
@@ -201,14 +271,14 @@ export default function RecipientView({ transfer }: RecipientViewProps) {
         {/* Download All */}
         {transfer.files.length > 1 && (
           <motion.div
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 }}
+            transition={{ delay: 0.5 }}
             className="text-center"
           >
             <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              whileHover={{ scale: 1.03, y: -2 }}
+              whileTap={{ scale: 0.97 }}
               onClick={handleDownloadAll}
               disabled={downloading !== null}
               className="btn-primary inline-flex items-center gap-2"
@@ -237,8 +307,8 @@ export default function RecipientView({ transfer }: RecipientViewProps) {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="text-center mt-8"
+          transition={{ delay: 0.7 }}
+          className="text-center mt-10"
         >
           <p className="text-xs text-fog flex items-center justify-center gap-1.5">
             <Shield size={12} />

@@ -1,4 +1,5 @@
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform, useInView } from 'framer-motion';
+import { useRef } from 'react';
 import { Shield, Clock, Lock, Zap, Globe, Server, Upload, Link2, Download, ArrowRight } from 'lucide-react';
 
 const features = [
@@ -34,66 +35,172 @@ const features = [
   },
 ];
 
-export default function Features() {
+function FeatureCard({ feature, index }: { feature: typeof features[0]; index: number }) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(cardRef, { once: true, margin: '-80px' });
+
   return (
-    <section id="features" className="relative py-24 md:py-32 px-6">
+    <motion.div
+      ref={cardRef}
+      initial={{ opacity: 0, y: 60, rotateX: 12, rotateY: index % 2 === 0 ? -8 : 8 }}
+      animate={isInView ? { opacity: 1, y: 0, rotateX: 0, rotateY: 0 } : {}}
+      transition={{
+        duration: 0.8,
+        delay: index * 0.1,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      whileHover={{
+        scale: 1.03,
+        rotateY: 2,
+        rotateX: -2,
+        z: 20,
+        transition: { duration: 0.3 }
+      }}
+      className="glass-card rounded-2xl p-6 group hover:bg-glass-fill-hover transition-colors"
+      style={{ transformStyle: 'preserve-3d' }}
+    >
+      <motion.div
+        className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-violet/10 border border-violet/20 mb-5 group-hover:bg-violet/20 group-hover:shadow-lg group-hover:shadow-violet/10 transition-all"
+        style={{ transform: 'translateZ(20px)' }}
+      >
+        <feature.icon size={20} className="text-violet-bright" />
+      </motion.div>
+      <h3 className="text-frost font-medium text-base mb-2" style={{ transform: 'translateZ(10px)' }}>{feature.title}</h3>
+      <p className="text-fog text-sm leading-relaxed" style={{ transform: 'translateZ(5px)' }}>{feature.description}</p>
+    </motion.div>
+  );
+}
+
+function HowItWorksStep({ step, icon: Icon, title, description, index, isLast }: {
+  step: string;
+  icon: React.ComponentType<any>;
+  title: string;
+  description: string;
+  index: number;
+  isLast: boolean;
+}) {
+  const stepRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(stepRef, { once: true, margin: '-60px' });
+
+  return (
+    <motion.div
+      ref={stepRef}
+      initial={{
+        opacity: 0,
+        x: index === 0 ? -80 : index === 2 ? 80 : 0,
+        y: index === 1 ? 60 : 0,
+        rotateY: index === 0 ? 15 : index === 2 ? -15 : 0,
+      }}
+      animate={isInView ? { opacity: 1, x: 0, y: 0, rotateY: 0 } : {}}
+      transition={{ duration: 0.8, delay: index * 0.15, ease: [0.22, 1, 0.36, 1] }}
+      className="relative"
+      style={{ perspective: '1000px' }}
+    >
+      <motion.div
+        whileHover={{ scale: 1.05, y: -5 }}
+        className="glass-card-elevated rounded-2xl p-6 h-full"
+        style={{ transformStyle: 'preserve-3d' }}
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <span className="text-xs font-mono text-violet-bright/60">{step}</span>
+          <div className="flex-1 h-px bg-gradient-to-r from-violet/20 to-transparent" />
+        </div>
+        <motion.div
+          className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-violet/10 border border-violet/20 mb-4 glow-violet"
+          style={{ transform: 'translateZ(30px)' }}
+          animate={{ rotateY: [0, 360] }}
+          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
+        >
+          <Icon size={20} className="text-violet-bright" />
+        </motion.div>
+        <h4 className="text-frost font-medium text-lg mb-2" style={{ transform: 'translateZ(15px)' }}>{title}</h4>
+        <p className="text-fog text-sm leading-relaxed" style={{ transform: 'translateZ(8px)' }}>{description}</p>
+      </motion.div>
+      {!isLast && (
+        <div className="hidden md:flex absolute top-1/2 -right-4 transform -translate-y-1/2 z-10">
+          <motion.div
+            animate={{ x: [0, 5, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            <ArrowRight size={18} className="text-violet/40" />
+          </motion.div>
+        </div>
+      )}
+    </motion.div>
+  );
+}
+
+export default function Features() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end start"]
+  });
+
+  const bgY = useTransform(scrollYProgress, [0, 1], [100, -100]);
+  const glowOpacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 0.5, 0.5, 0]);
+
+  return (
+    <section ref={sectionRef} id="features" className="relative py-24 md:py-32 px-6 overflow-hidden">
+      {/* Parallax background glow */}
+      <motion.div
+        className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-violet/3 rounded-full blur-[200px] pointer-events-none"
+        style={{ y: bgY, opacity: glowOpacity }}
+      />
+
       {/* Section divider */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-xl h-px bg-gradient-to-r from-transparent via-glass-border to-transparent" />
 
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-6xl mx-auto relative z-10" style={{ perspective: '1200px' }}>
         {/* Section Header */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
+          initial={{ opacity: 0, y: 40, rotateX: 8 }}
+          whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
           viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-16"
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center mb-20"
+          style={{ transformStyle: 'preserve-3d' }}
         >
-          <div className="section-eyebrow mb-4">Why RIFT</div>
-          <h2 className="font-display text-3xl md:text-5xl font-medium text-frost tracking-tight mb-4">
-            Built for secure, simple transfers
+          <div className="section-eyebrow mb-6">Why RIFT</div>
+          <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-medium text-frost tracking-tight mb-5">
+            Built for secure,
+            <br />
+            <span className="text-gradient-violet">simple transfers</span>
           </h2>
-          <p className="text-moon text-lg font-light max-w-xl mx-auto">
+          <p className="text-fog text-lg font-light max-w-xl mx-auto" style={{ fontWeight: 300 }}>
             Enterprise-grade security meets consumer simplicity. No compromises.
           </p>
         </motion.div>
 
         {/* Features Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-28">
           {features.map((feature, index) => (
-            <motion.div
-              key={feature.title}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-50px' }}
-              transition={{ duration: 0.4, delay: index * 0.05 }}
-              className="glass-card rounded-2xl p-6 hover:bg-glass-fill-hover transition-colors group"
-            >
-              <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-violet/10 border border-violet/20 mb-4 group-hover:bg-violet/20 transition-colors">
-                <feature.icon size={18} className="text-violet-bright" />
-              </div>
-              <h3 className="text-frost font-medium text-base mb-2">{feature.title}</h3>
-              <p className="text-fog text-sm leading-relaxed">{feature.description}</p>
-            </motion.div>
+            <FeatureCard key={feature.title} feature={feature} index={index} />
           ))}
         </div>
 
         {/* How it works */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="mt-24 mb-20"
+          className="mb-28"
         >
-          <div className="text-center mb-12">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-14"
+          >
             <div className="section-eyebrow mb-4">How it works</div>
             <h3 className="font-display text-2xl md:text-4xl font-medium text-frost tracking-tight">
               Three steps. That's it.
             </h3>
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
                 step: '01',
@@ -113,32 +220,16 @@ export default function Features() {
                 title: 'Share & download',
                 description: 'Recipients open the link and download instantly. No account needed. Files auto-expire.',
               },
-            ].map((item, index) => (
-              <motion.div
+            ].map((item, index, arr) => (
+              <HowItWorksStep
                 key={item.step}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.1 }}
-                className="relative"
-              >
-                <div className="glass-card rounded-2xl p-6 h-full hover-lift">
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="text-xs font-mono text-violet-bright/60">{item.step}</span>
-                    <div className="flex-1 h-px bg-gradient-to-r from-violet/20 to-transparent" />
-                  </div>
-                  <div className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-violet/10 border border-violet/20 mb-4">
-                    <item.icon size={18} className="text-violet-bright" />
-                  </div>
-                  <h4 className="text-frost font-medium mb-2">{item.title}</h4>
-                  <p className="text-fog text-sm leading-relaxed">{item.description}</p>
-                </div>
-                {index < 2 && (
-                  <div className="hidden md:flex absolute top-1/2 -right-3 transform -translate-y-1/2 z-10">
-                    <ArrowRight size={16} className="text-violet/30" />
-                  </div>
-                )}
-              </motion.div>
+                step={item.step}
+                icon={item.icon}
+                title={item.title}
+                description={item.description}
+                index={index}
+                isLast={index === arr.length - 1}
+              />
             ))}
           </div>
         </motion.div>
@@ -146,52 +237,72 @@ export default function Features() {
         {/* Security Section */}
         <motion.div
           id="security"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: '-100px' }}
-          transition={{ duration: 0.5 }}
-          className="mt-20 glass-card-elevated rounded-2xl p-8 md:p-12"
+          initial={{ opacity: 0, y: 50, rotateX: 6 }}
+          whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
+          viewport={{ once: true, margin: '-80px' }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="glass-card-elevated rounded-3xl p-8 md:p-12"
+          style={{ transformStyle: 'preserve-3d' }}
         >
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div>
-              <div className="section-eyebrow mb-3">Security First</div>
-              <h3 className="font-display text-2xl md:text-3xl font-medium text-frost tracking-tight mb-4">
-                Production-grade security, zero complexity
+          <div className="grid md:grid-cols-2 gap-10 items-center">
+            <motion.div
+              style={{ transform: 'translateZ(20px)' }}
+            >
+              <div className="section-eyebrow mb-4">Security First</div>
+              <h3 className="font-display text-2xl md:text-3xl lg:text-4xl font-medium text-frost tracking-tight mb-5">
+                Production-grade security,
+                <br />
+                <span className="text-gradient">zero complexity</span>
               </h3>
-              <p className="text-moon text-sm leading-relaxed mb-6">
+              <p className="text-fog text-sm leading-relaxed mb-8">
                 Every transfer is protected by industry-standard encryption, malware scanning, rate limiting, and automatic cleanup. We never store passwords in plaintext, never expose sequential IDs, and always enforce expiration server-side.
               </p>
               <div className="flex flex-wrap gap-2">
                 {['TLS 1.3', 'AES-256', 'Argon2id', 'ClamAV', 'Rate Limiting', 'Signed URLs'].map((tag) => (
-                  <span
+                  <motion.span
                     key={tag}
-                    className="px-3 py-1 rounded-full text-xs font-medium bg-violet/10 text-violet-bright border border-violet/20"
+                    whileHover={{ scale: 1.05 }}
+                    className="px-3 py-1.5 rounded-full text-xs font-medium bg-violet/10 text-violet-bright border border-violet/20"
                   >
                     {tag}
-                  </span>
+                  </motion.span>
                 ))}
               </div>
-            </div>
-            
-            <div className="relative">
+            </motion.div>
+
+            <motion.div
+              className="relative"
+              style={{ transform: 'translateZ(30px)' }}
+              initial={{ opacity: 0, x: 40, rotateY: -10 }}
+              whileInView={{ opacity: 1, x: 0, rotateY: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
               <div className="absolute inset-0 bg-violet/5 rounded-2xl blur-xl" />
-              <div className="relative glass-card rounded-2xl p-6 space-y-4">
+              <div className="relative glass-card rounded-2xl p-6 space-y-5">
                 {[
                   { label: 'Encryption', value: 'AES-256-GCM', status: 'active' },
                   { label: 'Malware Scan', value: 'ClamAV', status: 'active' },
                   { label: 'Rate Limit', value: '100 req/min', status: 'active' },
                   { label: 'Signed URLs', value: '15 min expiry', status: 'active' },
-                ].map((item) => (
-                  <div key={item.label} className="flex items-center justify-between">
+                ].map((item, i) => (
+                  <motion.div
+                    key={item.label}
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.3 + i * 0.1 }}
+                    className="flex items-center justify-between"
+                  >
                     <span className="text-sm text-fog">{item.label}</span>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                       <span className="text-sm text-frost font-mono">{item.value}</span>
-                      <div className="w-2 h-2 rounded-full bg-success" />
+                      <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
-            </div>
+            </motion.div>
           </div>
         </motion.div>
       </div>

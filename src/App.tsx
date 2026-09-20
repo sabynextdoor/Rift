@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useScroll } from 'framer-motion';
 import { AppView, TransferFile, TransferConfig, Transfer } from './types';
 import { generateFileId, validateFile, simulateUpload, createTransfer, storeTransfer, getTransfer } from './utils/transfer';
 import Header from './components/Header';
@@ -10,7 +10,6 @@ import RecipientView from './components/RecipientView';
 import Features from './components/Features';
 import Footer from './components/Footer';
 import ParticleField from './components/ParticleField';
-import ScrollProgress from './components/ScrollProgress';
 
 function App() {
   const [view, setView] = useState<AppView>('landing');
@@ -23,18 +22,32 @@ function App() {
   const [transfer, setTransfer] = useState<Transfer | null>(null);
   const [recipientTransfer, setRecipientTransfer] = useState<Transfer | null>(null);
   const abortRef = useRef<AbortController | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  // Check URL for recipient mode
+  // Scroll progress for progress bar
+  const { scrollYProgress } = useScroll();
+
+  // Check URL for recipient mode on mount AND on popstate
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const transferId = params.get('t');
-    if (transferId) {
-      const t = getTransfer(transferId);
-      if (t) {
-        setRecipientTransfer(t);
-        setView('recipient');
+    const checkUrl = () => {
+      const params = new URLSearchParams(window.location.search);
+      const transferId = params.get('t');
+      if (transferId) {
+        const t = getTransfer(transferId);
+        if (t) {
+          setRecipientTransfer(t);
+          setView('recipient');
+        } else {
+          // Transfer not found in localStorage - show error in recipient view
+          setRecipientTransfer(null);
+          setView('recipient');
+        }
       }
-    }
+    };
+
+    checkUrl();
+    window.addEventListener('popstate', checkUrl);
+    return () => window.removeEventListener('popstate', checkUrl);
   }, []);
 
   const addFiles = useCallback((newFiles: FileList | File[]) => {
@@ -65,7 +78,7 @@ function App() {
 
   const cancelUpload = useCallback(() => {
     abortRef.current?.abort();
-    setFiles(prev => prev.map(f => 
+    setFiles(prev => prev.map(f =>
       f.status === 'UPLOADING' ? { ...f, status: 'FAILED' as const } : f
     ));
   }, []);
@@ -84,14 +97,14 @@ function App() {
     // Upload each file
     let allSuccess = true;
     for (const file of newTransfer.files) {
-      setFiles(prev => prev.map(f => 
+      setFiles(prev => prev.map(f =>
         f.id === file.id ? { ...f, status: 'UPLOADING' as const } : f
       ));
 
       const success = await simulateUpload(
         file,
         (progress) => {
-          setFiles(prev => prev.map(f => 
+          setFiles(prev => prev.map(f =>
             f.id === file.id ? { ...f, progress } : f
           ));
         },
@@ -100,11 +113,11 @@ function App() {
 
       if (!success) {
         allSuccess = false;
-        setFiles(prev => prev.map(f => 
+        setFiles(prev => prev.map(f =>
           f.id === file.id ? { ...f, status: 'FAILED' as const } : f
         ));
       } else {
-        setFiles(prev => prev.map(f => 
+        setFiles(prev => prev.map(f =>
           f.id === file.id ? { ...f, status: 'READY' as const, progress: 100 } : f
         ));
       }
@@ -114,12 +127,12 @@ function App() {
       newTransfer.status = 'READY';
       storeTransfer(newTransfer);
       setTransfer(newTransfer);
-      
-      // Update URL
+
+      // Update URL with transfer ID
       const url = new URL(window.location.href);
       url.searchParams.set('t', newTransfer.publicId);
       window.history.pushState({}, '', url.toString());
-      
+
       setTimeout(() => setView('ready'), 800);
     }
   }, [files, config]);
@@ -128,8 +141,11 @@ function App() {
     setFiles([]);
     setTransfer(null);
     setRecipientTransfer(null);
+    setConfig({ expiration: '24h', password: '', downloadLimit: 'unlimited' });
     setView('landing');
+    // Clear URL params
     window.history.pushState({}, '', window.location.pathname);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
   const renderView = () => {
@@ -137,7 +153,7 @@ function App() {
       case 'landing':
         return (
           <>
-            <Hero 
+            <Hero
               files={files}
               config={config}
               onAddFiles={addFiles}
@@ -150,7 +166,7 @@ function App() {
         );
       case 'uploading':
         return (
-          <UploadView 
+          <UploadView
             files={files}
             transfer={transfer}
             onCancel={cancelUpload}
@@ -158,14 +174,14 @@ function App() {
         );
       case 'ready':
         return (
-          <ReadyView 
+          <ReadyView
             transfer={transfer}
             onNewTransfer={resetApp}
           />
         );
       case 'recipient':
         return (
-          <RecipientView 
+          <RecipientView
             transfer={recipientTransfer}
           />
         );
@@ -175,22 +191,32 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-void bg-grid bg-spotlight relative">
+    <div ref={containerRef} className="min-h-screen bg-void bg-grid bg-spotlight relative">
       <ParticleField />
-      <ScrollProgress />
       <div className="noise-overlay" aria-hidden="true" />
-      <Header 
+
+      {/* Scroll Progress Bar */}
+      <motion.div
+        className="fixed top-0 left-0 right-0 h-[2px] z-[100] origin-left"
+        style={{
+          scaleX: scrollYProgress,
+          background: 'linear-gradient(90deg, #663af3, #7c5cfc, #9178ff)'
+        }}
+      />
+
+      <Header
         view={view}
         onReset={resetApp}
       />
-      
+
       <AnimatePresence mode="wait">
         <motion.main
           key={view}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ opacity: 0, y: 30, rotateX: 4 }}
+          animate={{ opacity: 1, y: 0, rotateX: 0 }}
+          exit={{ opacity: 0, y: -30, rotateX: -4 }}
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          style={{ transformStyle: 'preserve-3d' }}
         >
           {renderView()}
         </motion.main>
