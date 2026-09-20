@@ -36,7 +36,7 @@ export default function Header({ view, onReset }: HeaderProps) {
             className="flex items-center gap-2.5 group"
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            aria-label="RIFT Home"
+            aria-label="Rift by Saby Home"
           >
             <div className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-accent">
@@ -44,9 +44,14 @@ export default function Header({ view, onReset }: HeaderProps) {
                 <path d="M5 8H11" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
               </svg>
             </div>
-            <span className="text-lg font-medium tracking-tight text-ice font-display">
-              RIFT
-            </span>
+            <div className="flex flex-col">
+              <span className="text-lg font-medium tracking-tight text-ice font-display leading-none">
+                Rift
+              </span>
+              <span className="text-[10px] text-fog font-medium tracking-wider leading-none">
+                by Saby
+              </span>
+            </div>
           </motion.button>
 
           {/* Nav */}

@@ -149,7 +149,7 @@ export default function LoadingAnimation({ onComplete }: LoadingAnimationProps) 
           onAnimationComplete={onComplete}
         >
           <div className="text-4xl font-bold text-white tracking-tight">
-            RIFT
+            Rift
           </div>
         </motion.div>
       </div>

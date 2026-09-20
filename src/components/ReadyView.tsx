@@ -53,8 +53,8 @@ export default function ReadyView({ transfer, onNewTransfer }: ReadyViewProps) {
     if (navigator.share) {
       try {
         await navigator.share({
-          title: 'RIFT Transfer',
-          text: `I'm sending you ${transfer.files.length} file${transfer.files.length > 1 ? 's' : ''} via RIFT`,
+          title: 'Rift by Saby Transfer',
+          text: `I'm sending you ${transfer.files.length} file${transfer.files.length > 1 ? 's' : ''} via Rift by Saby`,
           url: transferUrl,
         });
       } catch {
@@ -94,7 +94,7 @@ export default function ReadyView({ transfer, onNewTransfer }: ReadyViewProps) {
 
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-ok/10 border border-ok/20 mb-4">
             <CheckCircle2 size={14} className="text-ok" />
-            <span className="text-xs text-ok font-medium">RIFT Ready</span>
+            <span className="text-xs text-ok font-medium">Rift Ready</span>
           </div>
 
           <h2 className="premium-display mb-3">

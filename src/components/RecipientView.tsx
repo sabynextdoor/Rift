@@ -52,7 +52,7 @@ export default function RecipientView({ transfer, notFound }: RecipientViewProps
             This transfer link may be invalid or the data could not be decoded. Please check the link or ask the sender to create a new transfer.
           </p>
           <a href={window.location.pathname} className="premium-button-primary inline-block">
-            Go to RIFT
+            Go to Rift
           </a>
         </motion.div>
       </section>
@@ -81,7 +81,7 @@ export default function RecipientView({ transfer, notFound }: RecipientViewProps
             This transfer has expired and all files have been permanently removed from storage.
           </p>
           <a href={window.location.pathname} className="premium-button-primary inline-block">
-            Go to RIFT
+            Go to Rift
           </a>
         </motion.div>
       </section>

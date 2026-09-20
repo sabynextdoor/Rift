@@ -305,7 +305,7 @@ export default function RiftTransferExperience({
             {status === 'approaching' && 'Establishing connection...'}
             {status === 'proximity' && 'Endpoints detected'}
             {status === 'connected' && 'Connection established'}
-            {status === 'seam_open' && 'Opening RIFT...'}
+            {status === 'seam_open' && 'Opening Rift...'}
             {status === 'transferring' && `Transferring ${fileName || 'file'}...`}
             {status === 'reconstructing' && 'Reconstructing file...'}
             {status === 'complete' && 'Transfer complete'}

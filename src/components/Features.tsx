@@ -156,7 +156,7 @@ export default function Features() {
           className="text-center mb-20"
           style={{ transformStyle: 'preserve-3d' }}
         >
-          <div className="premium-eyebrow mb-6">Why RIFT</div>
+          <div className="premium-eyebrow mb-6">Why Rift</div>
           <h2 className="premium-display mb-5">
             Built for secure,
             <br />
