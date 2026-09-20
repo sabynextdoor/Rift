@@ -56,17 +56,17 @@ function FeatureCard({ feature, index }: { feature: typeof features[0]; index: n
         z: 20,
         transition: { duration: 0.3 }
       }}
-      className="card group"
+      className="premium-panel p-6 premium-card-hover"
       style={{ transformStyle: 'preserve-3d' }}
     >
       <motion.div
-        className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 mb-5 group-hover:bg-accent/20 transition-colors"
+        className="premium-icon-tile mb-5"
         style={{ transform: 'translateZ(20px)' }}
       >
-        <feature.icon size={20} className="text-accent-bright" />
+        <feature.icon size={20} className="text-accent" />
       </motion.div>
-      <h3 className="text-body font-medium text-text-primary mb-2" style={{ transform: 'translateZ(10px)' }}>{feature.title}</h3>
-      <p className="text-body-sm text-text-secondary leading-relaxed" style={{ transform: 'translateZ(5px)' }}>{feature.description}</p>
+      <h3 className="text-base font-medium text-ice mb-2" style={{ transform: 'translateZ(10px)' }}>{feature.title}</h3>
+      <p className="text-sm text-fog leading-relaxed" style={{ transform: 'translateZ(5px)' }}>{feature.description}</p>
     </motion.div>
   );
 }
@@ -98,29 +98,29 @@ function HowItWorksStep({ step, icon: Icon, title, description, index, isLast }:
     >
       <motion.div
         whileHover={{ scale: 1.05, y: -5 }}
-        className="card-elevated h-full"
+        className="premium-panel-raised p-6 h-full"
         style={{ transformStyle: 'preserve-3d' }}
       >
         <div className="flex items-center gap-3 mb-4">
-          <span className="text-caption font-mono text-accent-bright/60">{step}</span>
+          <span className="text-xs font-mono text-accent/60">{step}</span>
           <div className="flex-1 h-px bg-gradient-to-r from-accent/20 to-transparent" />
         </div>
         <motion.div
-          className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-accent/10 border border-accent/20 mb-4"
+          className="premium-icon-tile mb-4"
           style={{ transform: 'translateZ(30px)' }}
         >
-          <Icon size={20} className="text-accent-bright" />
+          <Icon size={20} className="text-accent" />
         </motion.div>
-        <h4 className="text-body font-medium text-text-primary mb-2" style={{ transform: 'translateZ(15px)' }}>{title}</h4>
-        <p className="text-body-sm text-text-secondary leading-relaxed" style={{ transform: 'translateZ(8px)' }}>{description}</p>
+        <h4 className="text-lg font-medium text-ice mb-2" style={{ transform: 'translateZ(15px)' }}>{title}</h4>
+        <p className="text-sm text-fog leading-relaxed" style={{ transform: 'translateZ(8px)' }}>{description}</p>
       </motion.div>
       {!isLast && (
-        <div className="hidden md:flex absolute top-1/2 -right-3 transform -translate-y-1/2 z-10">
+        <div className="hidden md:flex absolute top-1/2 -right-4 transform -translate-y-1/2 z-10">
           <motion.div
             animate={{ x: [0, 5, 0] }}
             transition={{ duration: 1.5, repeat: Infinity }}
           >
-            <ArrowRight size={16} className="text-accent/30" />
+            <ArrowRight size={18} className="text-accent/30" />
           </motion.div>
         </div>
       )}
@@ -139,15 +139,15 @@ export default function Features() {
   const glowOpacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 0.3, 0.3, 0]);
 
   return (
-    <section ref={sectionRef} id="features" className="relative py-24 md:py-32 px-6 overflow-hidden">
+    <section ref={sectionRef} id="features" className="relative py-24 md:py-32 px-4 sm:px-6 overflow-hidden">
       <motion.div
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-accent/3 rounded-full blur-[200px] pointer-events-none"
         style={{ y: bgY, opacity: glowOpacity }}
       />
 
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-xl h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-xl h-px bg-gradient-to-r from-transparent via-hairline to-transparent" />
 
-      <div className="max-w-6xl mx-auto relative z-10" style={{ perspective: '1200px' }}>
+      <div className="premium-section relative z-10" style={{ perspective: '1200px' }}>
         <motion.div
           initial={{ opacity: 0, y: 40, rotateX: 8 }}
           whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
@@ -156,17 +156,13 @@ export default function Features() {
           className="text-center mb-20"
           style={{ transformStyle: 'preserve-3d' }}
         >
-          <div className="inline-flex items-center gap-3 mb-6">
-            <div className="h-px w-12 bg-gradient-to-r from-transparent to-accent/30" />
-            <span className="text-caption font-mono text-accent-bright uppercase tracking-wider">Why RIFT</span>
-            <div className="h-px w-12 bg-gradient-to-l from-transparent to-accent/30" />
-          </div>
-          <h2 className="text-section text-text-primary mb-5">
+          <div className="premium-eyebrow mb-6">Why RIFT</div>
+          <h2 className="premium-display mb-5">
             Built for secure,
             <br />
-            <span className="text-accent-bright">simple transfers</span>
+            <span className="premium-gradient-text">simple transfers</span>
           </h2>
-          <p className="text-body-lg text-text-secondary max-w-xl mx-auto">
+          <p className="premium-subtitle max-w-xl mx-auto">
             Enterprise-grade security meets consumer simplicity. No compromises.
           </p>
         </motion.div>
@@ -191,12 +187,8 @@ export default function Features() {
             transition={{ duration: 0.6 }}
             className="text-center mb-14"
           >
-            <div className="inline-flex items-center gap-3 mb-4">
-              <div className="h-px w-12 bg-gradient-to-r from-transparent to-accent/30" />
-              <span className="text-caption font-mono text-accent-bright uppercase tracking-wider">How it works</span>
-              <div className="h-px w-12 bg-gradient-to-l from-transparent to-accent/30" />
-            </div>
-            <h3 className="text-section text-text-primary">
+            <div className="premium-eyebrow mb-4">How it works</div>
+            <h3 className="premium-display">
               Three steps. That's it.
             </h3>
           </motion.div>
@@ -241,21 +233,18 @@ export default function Features() {
           whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="card-elevated"
+          className="premium-panel-raised p-8 md:p-12"
           style={{ transformStyle: 'preserve-3d' }}
         >
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <motion.div style={{ transform: 'translateZ(20px)' }}>
-              <div className="inline-flex items-center gap-3 mb-4">
-                <div className="h-px w-12 bg-gradient-to-r from-transparent to-accent/30" />
-                <span className="text-caption font-mono text-accent-bright uppercase tracking-wider">Security First</span>
-              </div>
-              <h3 className="text-section text-text-primary mb-5">
+              <div className="premium-eyebrow mb-4">Security First</div>
+              <h3 className="premium-display mb-5">
                 Production-grade security,
                 <br />
-                <span className="text-accent-bright">zero complexity</span>
+                <span className="premium-gradient-text">zero complexity</span>
               </h3>
-              <p className="text-body-sm text-text-secondary leading-relaxed mb-8">
+              <p className="text-sm text-fog leading-relaxed mb-8">
                 Every transfer is protected by industry-standard encryption, malware scanning, rate limiting, and automatic cleanup. We never store passwords in plaintext, never expose sequential IDs, and always enforce expiration server-side.
               </p>
               <div className="flex flex-wrap gap-2">
@@ -263,7 +252,7 @@ export default function Features() {
                   <motion.span
                     key={tag}
                     whileHover={{ scale: 1.05 }}
-                    className="badge badge-info"
+                    className="premium-chip"
                   >
                     {tag}
                   </motion.span>
@@ -280,7 +269,7 @@ export default function Features() {
               transition={{ duration: 0.8, delay: 0.2 }}
             >
               <div className="absolute inset-0 bg-accent/5 rounded-2xl blur-xl" />
-              <div className="relative card space-y-5">
+              <div className="relative premium-panel p-6 space-y-5">
                 {[
                   { label: 'Encryption', value: 'AES-256-GCM', status: 'active' },
                   { label: 'Malware Scan', value: 'ClamAV', status: 'active' },
@@ -295,10 +284,10 @@ export default function Features() {
                     transition={{ delay: 0.3 + i * 0.1 }}
                     className="flex items-center justify-between"
                   >
-                    <span className="text-body-sm text-text-secondary">{item.label}</span>
+                    <span className="text-sm text-fog">{item.label}</span>
                     <div className="flex items-center gap-3">
-                      <span className="text-body-sm text-text-primary font-mono">{item.value}</span>
-                      <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
+                      <span className="text-sm text-frost font-mono">{item.value}</span>
+                      <div className="w-2 h-2 rounded-full bg-ok animate-pulse" />
                     </div>
                   </motion.div>
                 ))}
