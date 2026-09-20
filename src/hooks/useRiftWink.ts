@@ -1,8 +1,8 @@
 import { useState, useRef } from 'react';
 
 // Configuration
-const WINK_CHANCE = 0.10; // 10% chance
-const COOLDOWN_MS = 10000; // 10 seconds cooldown
+const WINK_CHANCE = 0.40; // 40% chance - much more visible!
+const COOLDOWN_MS = 3000; // 3 seconds cooldown - can wink again sooner
 
 export function useRiftWink() {
   const [shouldWink, setShouldWink] = useState(false);
