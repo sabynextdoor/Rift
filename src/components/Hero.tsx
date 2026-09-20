@@ -82,9 +82,14 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
                 <path d="M5 8H11" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
               </svg>
             </div>
-            <span className="text-2xl font-medium tracking-tight text-ice font-display">
-              RIFT
-            </span>
+            <div className="flex flex-col">
+              <span className="text-2xl font-medium tracking-tight text-ice font-display leading-none">
+                Rift
+              </span>
+              <span className="text-xs text-fog font-medium tracking-wider leading-none mt-0.5">
+                by Saby
+              </span>
+            </div>
           </motion.div>
 
           <motion.h1

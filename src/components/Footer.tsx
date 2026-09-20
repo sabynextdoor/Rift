@@ -11,10 +11,13 @@ export default function Footer() {
                   <path d="M5 8H11" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
                 </svg>
               </div>
-              <span className="text-base font-medium tracking-tight text-ice font-display">RIFT</span>
+              <span className="text-base font-medium tracking-tight text-ice font-display">Rift</span>
             </div>
             <p className="text-sm text-fog leading-relaxed">
               Secure file transfers with expiring links. Send files, share a link, done.
+            </p>
+            <p className="text-xs text-fog/60 mt-2">
+              Designed & built by Saby
             </p>
           </div>
 
@@ -54,7 +57,7 @@ export default function Footer() {
 
         <div className="mt-14 pt-8 border-t border-hairline flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-xs text-fog">
-            © {new Date().getFullYear()} RIFT. All rights reserved.
+            © {new Date().getFullYear()} Rift by Saby. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
             <span className="flex items-center gap-1.5 text-xs text-fog">

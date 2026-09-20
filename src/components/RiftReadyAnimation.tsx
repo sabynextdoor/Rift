@@ -127,7 +127,7 @@ export default function RiftReadyAnimation({ fileName, fileCount }: RiftReadyAni
         }}
       >
         <div className="text-heading text-text-primary mb-2">
-          RIFT Ready
+          Rift Ready
         </div>
         {fileName && (
           <div className="text-body-sm text-text-secondary">
