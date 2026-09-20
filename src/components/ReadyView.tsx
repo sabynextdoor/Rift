@@ -1,9 +1,11 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Copy, Check, ExternalLink, Share2, Trash2, Clock, Lock, Download, File, QrCode, CheckCircle2 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import { Transfer } from '../types';
 import { formatFileSize, formatRelativeTime, getTransferUrl } from '../utils/transfer';
+import ThunderFlash from './ThunderFlash';
+import { useThunderFlash } from '../hooks/useThunderFlash';
 
 interface ReadyViewProps {
   transfer: Transfer | null;
@@ -14,6 +16,17 @@ export default function ReadyView({ transfer, onNewTransfer }: ReadyViewProps) {
   const [copied, setCopied] = useState(false);
   const [showQR, setShowQR] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { trigger: thunderTrigger, flash: triggerThunder } = useThunderFlash();
+
+  // Trigger thunder flash when transfer is ready
+  useEffect(() => {
+    if (transfer) {
+      const timer = setTimeout(() => {
+        triggerThunder();
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [transfer, triggerThunder]);
 
   if (!transfer) return null;
 
@@ -23,12 +36,14 @@ export default function ReadyView({ transfer, onNewTransfer }: ReadyViewProps) {
     try {
       await navigator.clipboard.writeText(transferUrl);
       setCopied(true);
+      triggerThunder(); // Micro thunder flash on copy
       setTimeout(() => setCopied(false), 2500);
     } catch {
       if (inputRef.current) {
         inputRef.current.select();
         document.execCommand('copy');
         setCopied(true);
+        triggerThunder(); // Micro thunder flash on copy
         setTimeout(() => setCopied(false), 2500);
       }
     }
@@ -68,9 +83,13 @@ export default function ReadyView({ transfer, onNewTransfer }: ReadyViewProps) {
             initial={{ scale: 0, rotate: -180 }}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ type: 'spring', delay: 0.2, stiffness: 200 }}
-            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-accent/10 border border-accent/20 mb-6"
+            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-accent/10 border border-accent/20 mb-6 relative"
           >
             <CheckCircle2 size={36} className="text-accent" />
+            {/* Thunder flash on transfer complete */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <ThunderFlash trigger={thunderTrigger} size="normal" />
+            </div>
           </motion.div>
 
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-ok/10 border border-ok/20 mb-4">

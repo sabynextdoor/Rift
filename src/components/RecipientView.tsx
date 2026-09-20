@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { File, Image, Film, Music, Archive, FileText, Table, Presentation, Download, Lock, Shield, Clock, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { Transfer } from '../types';
 import { formatFileSize, formatRelativeTime } from '../utils/transfer';
+import ThunderFlash from './ThunderFlash';
+import { useThunderFlash } from '../hooks/useThunderFlash';
 
 interface RecipientViewProps {
   transfer: Transfer | null;
@@ -27,6 +29,7 @@ export default function RecipientView({ transfer, notFound }: RecipientViewProps
   const [passwordError, setPasswordError] = useState('');
   const [downloading, setDownloading] = useState<string | null>(null);
   const [downloadedFiles, setDownloadedFiles] = useState<Set<string>>(new Set());
+  const { trigger: thunderTrigger, flash: triggerThunder } = useThunderFlash();
 
   if (!transfer || notFound) {
     return (
@@ -100,6 +103,7 @@ export default function RecipientView({ transfer, notFound }: RecipientViewProps
     setTimeout(() => {
       setDownloading(null);
       setDownloadedFiles(prev => new Set(prev).add(fileId));
+      triggerThunder(); // Small thunder flash on download complete
     }, 1500);
   };
 
@@ -108,6 +112,7 @@ export default function RecipientView({ transfer, notFound }: RecipientViewProps
     setTimeout(() => {
       setDownloading(null);
       setDownloadedFiles(new Set(transfer.files.map(f => f.id)));
+      triggerThunder(); // Small thunder flash on download all complete
     }, 2500);
   };
 
