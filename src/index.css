@@ -289,6 +289,60 @@ body {
   animation: connection-flow 1.5s infinite var(--ease-in-out);
 }
 
+/* Liquid ripple animation */
+@keyframes liquid-ripple {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 1;
+  }
+  100% {
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+  }
+}
+
+.liquid-ripple {
+  animation: liquid-ripple 0.6s cubic-bezier(0.4, 0, 0.6, 1) forwards;
+}
+
+/* Liquid glass surface effect */
+.liquid-glass-surface {
+  position: relative;
+  overflow: hidden;
+}
+
+.liquid-glass-surface::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse at 30% 20%,
+    rgba(255, 255, 255, 0.1) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+}
+
+.liquid-glass-surface::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+    rgba(10, 132, 255, 0.1) 0%,
+    transparent 50%
+  );
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.liquid-glass-surface:hover::after {
+  opacity: 1;
+}
+
 /* ============================================
    TYPOGRAPHY
    ============================================ */

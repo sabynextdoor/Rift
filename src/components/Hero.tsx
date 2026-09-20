@@ -145,7 +145,7 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
           </motion.p>
         </div>
 
-        {/* Drop Zone */}
+        {/* Drop Zone - Liquid Glass Surface */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
@@ -153,11 +153,71 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
         >
           <div
             ref={dropzoneRef}
-            className={`dropzone ${isDragOver ? 'active' : ''}`}
+            className={`relative overflow-hidden rounded-3xl transition-all duration-300 ${
+              isDragOver ? 'scale-[1.02]' : ''
+            }`}
+            style={{
+              background: isDragOver
+                ? `
+                  linear-gradient(
+                    135deg,
+                    rgba(10, 132, 255, 0.08) 0%,
+                    rgba(255, 255, 255, 0.03) 100%
+                  )
+                `
+                : `
+                  linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.05) 0%,
+                    rgba(255, 255, 255, 0.02) 100%
+                  )
+                `,
+              backdropFilter: 'blur(40px)',
+              border: isDragOver ? '1px solid rgba(10, 132, 255, 0.3)' : '1px solid rgba(255, 255, 255, 0.08)',
+              boxShadow: isDragOver
+                ? `
+                  inset 0 1px 1px rgba(10, 132, 255, 0.2),
+                  0 20px 60px rgba(10, 132, 255, 0.15)
+                `
+                : `
+                  inset 0 1px 1px rgba(255, 255, 255, 0.1),
+                  0 20px 60px rgba(0, 0, 0, 0.3)
+                `,
+            }}
             onDragOver={handleDragOver}
             onDragLeave={handleDragLeave}
             onDrop={handleDrop}
           >
+            {/* Liquid glass highlight */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                background: `
+                  radial-gradient(
+                    ellipse at 30% 20%,
+                    rgba(255, 255, 255, 0.1) 0%,
+                    transparent 50%
+                  )
+                `,
+              }}
+            />
+
+            {/* Mouse-following highlight */}
+            <div
+              className="absolute inset-0 pointer-events-none transition-opacity duration-300"
+              style={{
+                background: `
+                  radial-gradient(
+                    circle at var(--mouse-x, 50%) var(--mouse-y, 50%),
+                    rgba(10, 132, 255, 0.1) 0%,
+                    transparent 50%
+                  )
+                `,
+                opacity: isDragOver ? 1 : 0,
+              }}
+            />
+
+            <div className="relative z-10 p-12">
             {/* Hidden inputs */}
             <input
               ref={fileInputRef}
@@ -370,6 +430,7 @@ export default function Hero({ files, config, onAddFiles, onRemoveFile, onConfig
                 </motion.button>
               </div>
             )}
+            </div>
           </div>
         </motion.div>
 
