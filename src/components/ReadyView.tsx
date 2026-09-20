@@ -82,10 +82,10 @@ export default function ReadyView({ transfer, onNewTransfer }: ReadyViewProps) {
           </motion.div>
 
           <div className="section-eyebrow mb-3">Transfer Ready</div>
-          <h2 className="font-display text-3xl md:text-4xl font-medium text-frost tracking-tight mb-2">
-            Your files are ready to share
+          <h2 className="headline-compressed text-white mb-2" style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
+            LINK READY
           </h2>
-          <p className="text-fog text-sm">
+          <p className="text-white/50 text-sm">
             {transfer.files.length} file{transfer.files.length > 1 ? 's' : ''} • {formatFileSize(transfer.totalSize)}
           </p>
         </motion.div>

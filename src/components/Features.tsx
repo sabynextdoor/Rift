@@ -56,17 +56,17 @@ function FeatureCard({ feature, index }: { feature: typeof features[0]; index: n
         z: 20,
         transition: { duration: 0.3 }
       }}
-      className="glass-card rounded-2xl p-6 group hover:bg-glass-fill-hover transition-colors"
+      className="haze-card group hover:scale-105 transition-transform duration-300"
       style={{ transformStyle: 'preserve-3d' }}
     >
       <motion.div
-        className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-violet/10 border border-violet/20 mb-5 group-hover:bg-violet/20 group-hover:shadow-lg group-hover:shadow-violet/10 transition-all"
+        className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-black/5 mb-5"
         style={{ transform: 'translateZ(20px)' }}
       >
-        <feature.icon size={20} className="text-violet-bright" />
+        <feature.icon size={20} className="text-twilight" />
       </motion.div>
-      <h3 className="text-frost font-medium text-base mb-2" style={{ transform: 'translateZ(10px)' }}>{feature.title}</h3>
-      <p className="text-fog text-sm leading-relaxed" style={{ transform: 'translateZ(5px)' }}>{feature.description}</p>
+      <h3 className="text-ink font-medium text-base mb-2" style={{ transform: 'translateZ(10px)' }}>{feature.title}</h3>
+      <p className="text-ink/60 text-sm leading-relaxed" style={{ transform: 'translateZ(5px)' }}>{feature.description}</p>
     </motion.div>
   );
 }
@@ -98,7 +98,7 @@ function HowItWorksStep({ step, icon: Icon, title, description, index, isLast }:
     >
       <motion.div
         whileHover={{ scale: 1.05, y: -5 }}
-        className="glass-card-elevated rounded-2xl p-6 h-full"
+        className="glass-card-elevated p-6 h-full"
         style={{ transformStyle: 'preserve-3d' }}
       >
         <div className="flex items-center gap-3 mb-4">
@@ -106,15 +106,13 @@ function HowItWorksStep({ step, icon: Icon, title, description, index, isLast }:
           <div className="flex-1 h-px bg-gradient-to-r from-violet/20 to-transparent" />
         </div>
         <motion.div
-          className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-violet/10 border border-violet/20 mb-4 glow-violet"
+          className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-violet/10 border border-violet/20 mb-4 glow-violet"
           style={{ transform: 'translateZ(30px)' }}
-          animate={{ rotateY: [0, 360] }}
-          transition={{ duration: 20, repeat: Infinity, ease: 'linear' }}
         >
           <Icon size={20} className="text-violet-bright" />
         </motion.div>
-        <h4 className="text-frost font-medium text-lg mb-2" style={{ transform: 'translateZ(15px)' }}>{title}</h4>
-        <p className="text-fog text-sm leading-relaxed" style={{ transform: 'translateZ(8px)' }}>{description}</p>
+        <h4 className="text-white font-medium text-lg mb-2" style={{ transform: 'translateZ(15px)' }}>{title}</h4>
+        <p className="text-white/60 text-sm leading-relaxed" style={{ transform: 'translateZ(8px)' }}>{description}</p>
       </motion.div>
       {!isLast && (
         <div className="hidden md:flex absolute top-1/2 -right-4 transform -translate-y-1/2 z-10">
@@ -149,10 +147,10 @@ export default function Features() {
       />
 
       {/* Section divider */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-xl h-px bg-gradient-to-r from-transparent via-glass-border to-transparent" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-xl h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
       <div className="max-w-6xl mx-auto relative z-10" style={{ perspective: '1200px' }}>
-        {/* Section Header */}
+        {/* Section Header - Air style with compressed headline */}
         <motion.div
           initial={{ opacity: 0, y: 40, rotateX: 8 }}
           whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
@@ -162,17 +160,17 @@ export default function Features() {
           style={{ transformStyle: 'preserve-3d' }}
         >
           <div className="section-eyebrow mb-6">Why RIFT</div>
-          <h2 className="font-display text-3xl md:text-5xl lg:text-6xl font-medium text-frost tracking-tight mb-5">
-            Built for secure,
+          <h2 className="headline-compressed text-white mb-5" style={{ fontSize: 'clamp(3rem, 8vw, 8rem)' }}>
+            BUILT FOR
             <br />
-            <span className="text-gradient-violet">simple transfers</span>
+            <span className="text-twilight">SECURE</span> TRANSFERS
           </h2>
-          <p className="text-fog text-lg font-light max-w-xl mx-auto" style={{ fontWeight: 300 }}>
+          <p className="text-white/50 text-lg font-light max-w-xl mx-auto" style={{ fontWeight: 300 }}>
             Enterprise-grade security meets consumer simplicity. No compromises.
           </p>
         </motion.div>
 
-        {/* Features Grid */}
+        {/* Features Grid - Haze cards on dark */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 mb-28">
           {features.map((feature, index) => (
             <FeatureCard key={feature.title} feature={feature} index={index} />
@@ -195,8 +193,8 @@ export default function Features() {
             className="text-center mb-14"
           >
             <div className="section-eyebrow mb-4">How it works</div>
-            <h3 className="font-display text-2xl md:text-4xl font-medium text-frost tracking-tight">
-              Three steps. That's it.
+            <h3 className="headline-compressed text-white" style={{ fontSize: 'clamp(2.5rem, 6vw, 6rem)' }}>
+              THREE STEPS
             </h3>
           </motion.div>
 
@@ -234,27 +232,27 @@ export default function Features() {
           </div>
         </motion.div>
 
-        {/* Security Section */}
+        {/* Security Section - Haze card */}
         <motion.div
           id="security"
           initial={{ opacity: 0, y: 50, rotateX: 6 }}
           whileInView={{ opacity: 1, y: 0, rotateX: 0 }}
           viewport={{ once: true, margin: '-80px' }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-          className="glass-card-elevated rounded-3xl p-8 md:p-12"
+          className="haze-card p-8 md:p-12"
           style={{ transformStyle: 'preserve-3d' }}
         >
           <div className="grid md:grid-cols-2 gap-10 items-center">
             <motion.div
               style={{ transform: 'translateZ(20px)' }}
             >
-              <div className="section-eyebrow mb-4">Security First</div>
-              <h3 className="font-display text-2xl md:text-3xl lg:text-4xl font-medium text-frost tracking-tight mb-5">
-                Production-grade security,
+              <div className="section-eyebrow mb-4 text-twilight">Security First</div>
+              <h3 className="headline-compressed text-ink mb-5" style={{ fontSize: 'clamp(2rem, 4vw, 4rem)' }}>
+                PRODUCTION-GRADE
                 <br />
-                <span className="text-gradient">zero complexity</span>
+                <span className="text-twilight">SECURITY</span>
               </h3>
-              <p className="text-fog text-sm leading-relaxed mb-8">
+              <p className="text-ink/60 text-sm leading-relaxed mb-8">
                 Every transfer is protected by industry-standard encryption, malware scanning, rate limiting, and automatic cleanup. We never store passwords in plaintext, never expose sequential IDs, and always enforce expiration server-side.
               </p>
               <div className="flex flex-wrap gap-2">
@@ -262,7 +260,7 @@ export default function Features() {
                   <motion.span
                     key={tag}
                     whileHover={{ scale: 1.05 }}
-                    className="px-3 py-1.5 rounded-full text-xs font-medium bg-violet/10 text-violet-bright border border-violet/20"
+                    className="px-3 py-1.5 rounded-lg text-xs font-medium bg-black/5 text-ink border border-black/10"
                   >
                     {tag}
                   </motion.span>
@@ -278,8 +276,7 @@ export default function Features() {
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
             >
-              <div className="absolute inset-0 bg-violet/5 rounded-2xl blur-xl" />
-              <div className="relative glass-card rounded-2xl p-6 space-y-5">
+              <div className="bg-white rounded-xl p-6 space-y-5 border border-black/5">
                 {[
                   { label: 'Encryption', value: 'AES-256-GCM', status: 'active' },
                   { label: 'Malware Scan', value: 'ClamAV', status: 'active' },
@@ -294,10 +291,10 @@ export default function Features() {
                     transition={{ delay: 0.3 + i * 0.1 }}
                     className="flex items-center justify-between"
                   >
-                    <span className="text-sm text-fog">{item.label}</span>
+                    <span className="text-sm text-ink/60">{item.label}</span>
                     <div className="flex items-center gap-3">
-                      <span className="text-sm text-frost font-mono">{item.value}</span>
-                      <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
+                      <span className="text-sm text-ink font-mono font-medium">{item.value}</span>
+                      <div className="w-2 h-2 rounded-full bg-success" />
                     </div>
                   </motion.div>
                 ))}

@@ -8,7 +8,7 @@ interface HeaderProps {
 
 export default function Header({ view, onReset }: HeaderProps) {
   const { scrollY } = useScroll();
-  const headerBg = useSpring(useTransform(scrollY, [0, 100], [0, 0.85]), { stiffness: 100, damping: 30 });
+  const headerBg = useSpring(useTransform(scrollY, [0, 100], [0, 0.9]), { stiffness: 100, damping: 30 });
   const headerBlur = useSpring(useTransform(scrollY, [0, 100], [0, 20]), { stiffness: 100, damping: 30 });
   const headerBorderOpacity = useSpring(useTransform(scrollY, [0, 100], [0, 1]), { stiffness: 100, damping: 30 });
 
@@ -22,11 +22,11 @@ export default function Header({ view, onReset }: HeaderProps) {
       <motion.div
         className="mx-auto max-w-7xl px-6 py-4"
         style={{
-          backgroundColor: useTransform(headerBg, (v) => `rgba(3, 3, 9, ${v})`),
+          backgroundColor: useTransform(headerBg, (v) => `rgba(0, 0, 0, ${v})`),
           backdropFilter: useTransform(headerBlur, (v) => `blur(${v}px)`),
           WebkitBackdropFilter: useTransform(headerBlur, (v) => `blur(${v}px)`),
           borderBottomWidth: '1px',
-          borderBottomColor: useTransform(headerBorderOpacity, (v) => `rgba(124, 92, 252, ${v * 0.06})`),
+          borderBottomColor: useTransform(headerBorderOpacity, (v) => `rgba(255, 255, 255, ${v * 0.06})`),
         }}
       >
         <div className="flex items-center justify-between">
@@ -38,22 +38,19 @@ export default function Header({ view, onReset }: HeaderProps) {
             whileTap={{ scale: 0.98 }}
             aria-label="RIFT Home"
           >
-            <div className="relative">
-              <div className="w-8 h-8 rounded-lg bg-violet/15 border border-violet/25 flex items-center justify-center group-hover:bg-violet/25 transition-all duration-300">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-violet-bright">
-                  <path d="M3 2L8 14L13 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M5 8H11" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
-              </div>
-              <div className="absolute inset-0 rounded-lg bg-violet/10 blur-md opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="w-8 h-8 rounded-lg border border-white/20 flex items-center justify-center group-hover:border-white/40 transition-all duration-300">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-white">
+                <path d="M3 2L8 14L13 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M5 8H11" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
             </div>
-            <span className="text-lg font-display font-semibold tracking-tight text-frost">
+            <span className="headline-compressed text-lg text-white tracking-wider">
               RIFT
             </span>
           </motion.button>
 
           {/* Nav */}
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-2">
             {view === 'landing' && (
               <>
                 <a href="#features" className="btn-ghost text-xs py-2 px-4">Features</a>
@@ -78,10 +75,10 @@ export default function Header({ view, onReset }: HeaderProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet/5 border border-violet/10"
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/10"
             >
               <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-              <span className="text-xs text-moon font-medium">Secure</span>
+              <span className="text-xs text-white/60 font-medium">Secure</span>
             </motion.div>
           </div>
         </div>

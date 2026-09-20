@@ -226,7 +226,7 @@ function App() {
         className="fixed top-0 left-0 right-0 h-[2px] z-[100] origin-left"
         style={{
           scaleX: scrollYProgress,
-          background: 'linear-gradient(90deg, #663af3, #7c5cfc, #9178ff)'
+          background: 'linear-gradient(90deg, #2b7fff, #7c5cfc, #9178ff)'
         }}
       />
 

@@ -32,14 +32,14 @@ export default function ParticleField() {
     resize();
     window.addEventListener('resize', resize);
 
-    // Premium color palette - violet themed
+    // Air theme - subtle white/blue particles
     const colors = [
-      'rgba(124, 92, 252, 0.5)',   // violet
-      'rgba(145, 120, 255, 0.4)',  // violet bright
-      'rgba(167, 139, 250, 0.3)',  // violet light
-      'rgba(102, 58, 243, 0.3)',   // void violet
-      'rgba(216, 236, 248, 0.15)', // ice
-      'rgba(186, 215, 247, 0.1)',  // blueprint
+      'rgba(255, 255, 255, 0.3)',   // white
+      'rgba(255, 255, 255, 0.2)',   // white dim
+      'rgba(66, 97, 136, 0.3)',     // twilight blue
+      'rgba(43, 127, 255, 0.2)',    // signal blue
+      'rgba(124, 92, 252, 0.15)',   // violet subtle
+      'rgba(255, 255, 255, 0.1)',   // white faint
     ];
 
     const PARTICLE_COUNT = 50;
@@ -121,7 +121,7 @@ export default function ParticleField() {
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(124, 92, 252, ${opacity})`;
+            ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
