@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { File, Image, Film, Music, Archive, FileText, Table, Presentation, CheckCircle2, Loader2, AlertCircle } from 'lucide-react';
 import { TransferFile, Transfer } from '../types';
 import { formatFileSize } from '../utils/transfer';
+import LiquidProgress from './LiquidProgress';
 
 interface UploadViewProps {
   files: TransferFile[];
@@ -70,7 +71,7 @@ export default function UploadView({ files, onCancel }: UploadViewProps) {
           </p>
         </motion.div>
 
-        {/* Overall Progress */}
+        {/* Overall Progress - Liquid Glass */}
         {!isComplete && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -78,18 +79,11 @@ export default function UploadView({ files, onCancel }: UploadViewProps) {
             transition={{ delay: 0.2 }}
             className="mb-8"
           >
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center justify-between mb-3">
               <span className="text-body-sm text-text-secondary">{completedFiles} of {files.length} files</span>
               <span className="text-body-sm text-text-primary font-medium">{Math.round(totalProgress)}%</span>
             </div>
-            <div className="progress">
-              <motion.div
-                className="progress-bar"
-                initial={{ width: 0 }}
-                animate={{ width: `${totalProgress}%` }}
-                transition={{ duration: 0.3 }}
-              />
-            </div>
+            <LiquidProgress progress={totalProgress} />
           </motion.div>
         )}
 

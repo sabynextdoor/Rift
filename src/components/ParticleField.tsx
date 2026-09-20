@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface Particle {
   x: number;
@@ -15,6 +16,7 @@ export default function ParticleField() {
   const particlesRef = useRef<Particle[]>([]);
   const animationRef = useRef<number>(0);
   const mouseRef = useRef({ x: -1000, y: -1000 });
+  const { theme } = useTheme();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -30,12 +32,17 @@ export default function ParticleField() {
     resize();
     window.addEventListener('resize', resize);
 
-    // Subtle violet particles
-    const colors = [
-      'rgba(124, 92, 252, 0.15)',
-      'rgba(139, 111, 255, 0.12)',
-      'rgba(167, 139, 250, 0.1)',
-      'rgba(90, 61, 232, 0.08)',
+    // Subtle Apple blue particles - different opacity for light/dark mode
+    const colors = theme === 'dark' ? [
+      'rgba(10, 132, 255, 0.15)',
+      'rgba(64, 156, 255, 0.12)',
+      'rgba(0, 113, 227, 0.1)',
+      'rgba(0, 102, 204, 0.08)',
+    ] : [
+      'rgba(10, 132, 255, 0.06)',
+      'rgba(64, 156, 255, 0.05)',
+      'rgba(0, 113, 227, 0.04)',
+      'rgba(0, 102, 204, 0.03)',
     ];
 
     const PARTICLE_COUNT = 30; // Reduced count for subtlety
@@ -102,7 +109,7 @@ export default function ParticleField() {
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
-            ctx.strokeStyle = `rgba(124, 92, 252, ${opacity})`;
+            ctx.strokeStyle = `rgba(10, 132, 255, ${opacity})`;
             ctx.lineWidth = 0.5;
             ctx.stroke();
           }
@@ -119,7 +126,7 @@ export default function ParticleField() {
       window.removeEventListener('mousemove', handleMouseMove);
       cancelAnimationFrame(animationRef.current);
     };
-  }, []);
+  }, [theme]); // Reinitialize when theme changes
 
   return (
     <canvas

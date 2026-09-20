@@ -10,8 +10,10 @@ import RecipientView from './components/RecipientView';
 import Features from './components/Features';
 import Footer from './components/Footer';
 import ParticleField from './components/ParticleField';
+import LoadingAnimation from './components/LoadingAnimation';
+import { ThemeProvider } from './contexts/ThemeContext';
 
-function App() {
+function AppContent() {
   const [view, setView] = useState<AppView>('landing');
   const [files, setFiles] = useState<TransferFile[]>([]);
   const [config, setConfig] = useState<TransferConfig>({
@@ -22,6 +24,7 @@ function App() {
   const [transfer, setTransfer] = useState<Transfer | null>(null);
   const [recipientTransfer, setRecipientTransfer] = useState<Transfer | null>(null);
   const [transferNotFound, setTransferNotFound] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const abortRef = useRef<AbortController | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -232,39 +235,55 @@ function App() {
   };
 
   return (
-    <div ref={containerRef} className="min-h-screen bg-void bg-grid bg-spotlight relative">
-      <ParticleField />
-      <div className="noise-overlay" aria-hidden="true" />
-
-      {/* Scroll Progress Bar */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-[2px] z-[100] origin-left"
-        style={{
-          scaleX: scrollYProgress,
-          background: 'linear-gradient(90deg, #2b7fff, #7c5cfc, #9178ff)'
-        }}
-      />
-
-      <Header
-        view={view}
-        onReset={resetApp}
-      />
-
-      <AnimatePresence mode="wait">
-        <motion.main
-          key={view}
-          initial={{ opacity: 0, y: 30, rotateX: 4 }}
-          animate={{ opacity: 1, y: 0, rotateX: 0 }}
-          exit={{ opacity: 0, y: -30, rotateX: -4 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          style={{ transformStyle: 'preserve-3d' }}
-        >
-          {renderView()}
-        </motion.main>
+    <>
+      <AnimatePresence>
+        {isLoading && (
+          <LoadingAnimation onComplete={() => setIsLoading(false)} />
+        )}
       </AnimatePresence>
 
-      {view === 'landing' && <Footer />}
-    </div>
+      <div ref={containerRef} className="min-h-screen bg-void bg-grid bg-spotlight relative">
+        <ParticleField />
+        <div className="noise-overlay" aria-hidden="true" />
+
+        {/* Scroll Progress Bar */}
+        <motion.div
+          className="fixed top-0 left-0 right-0 h-[2px] z-[100] origin-left"
+          style={{
+            scaleX: scrollYProgress,
+            background: 'linear-gradient(90deg, #0071E3, #0A84FF, #409CFF)'
+          }}
+        />
+
+        <Header
+          view={view}
+          onReset={resetApp}
+        />
+
+        <AnimatePresence mode="wait">
+          <motion.main
+            key={view}
+            initial={{ opacity: 0, y: 30, rotateX: 4 }}
+            animate={{ opacity: 1, y: 0, rotateX: 0 }}
+            exit={{ opacity: 0, y: -30, rotateX: -4 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            style={{ transformStyle: 'preserve-3d' }}
+          >
+            {renderView()}
+          </motion.main>
+        </AnimatePresence>
+
+        {view === 'landing' && <Footer />}
+      </div>
+    </>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
 
