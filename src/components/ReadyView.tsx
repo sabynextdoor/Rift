@@ -1,10 +1,10 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Copy, Check, ExternalLink, Share2, Trash2, Clock, Lock, Download, File, QrCode, CheckCircle2 } from 'lucide-react';
-import { QRCodeSVG } from 'qrcode.react';
 import { Transfer } from '../types';
 import { formatFileSize, formatRelativeTime, getTransferUrl } from '../utils/transfer';
 import ThunderFlash from './ThunderFlash';
+import QRAnimation from './QRAnimation';
 import { useThunderFlash } from '../hooks/useThunderFlash';
 import { useRiftWink } from '../hooks/useRiftWink';
 
@@ -233,28 +233,11 @@ export default function ReadyView({ transfer, onNewTransfer }: ReadyViewProps) {
         </motion.div>
 
         {/* QR Code */}
-        <AnimatePresence>
-          {showQR && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, rotateX: 10 }}
-              animate={{ opacity: 1, scale: 1, rotateX: 0 }}
-              exit={{ opacity: 0, scale: 0.9, rotateX: -10 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-              className="premium-panel-raised p-8 mb-6 text-center"
-            >
-              <div className="inline-block p-4 bg-surface2 rounded-xl mb-4">
-                <QRCodeSVG
-                  value={transferUrl}
-                  size={180}
-                  level="M"
-                  bgColor="#0a0d18"
-                  fgColor="#d8ecf8"
-                />
-              </div>
-              <p className="text-sm text-mist">Scan to open transfer link</p>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <QRAnimation
+          isOpen={showQR}
+          onClose={() => setShowQR(false)}
+          url={transferUrl}
+        />
 
         {/* Transfer Details */}
         <motion.div
