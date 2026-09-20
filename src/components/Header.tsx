@@ -22,7 +22,7 @@ export default function Header({ view, onReset }: HeaderProps) {
       <motion.div
         className="mx-auto max-w-7xl px-6 py-4"
         style={{
-          backgroundColor: useTransform(headerBg, (v) => `rgba(0, 0, 0, ${v})`),
+          backgroundColor: useTransform(headerBg, (v) => `rgba(10, 10, 10, ${v})`),
           backdropFilter: useTransform(headerBlur, (v) => `blur(${v}px)`),
           WebkitBackdropFilter: useTransform(headerBlur, (v) => `blur(${v}px)`),
           borderBottomWidth: '1px',
@@ -38,13 +38,13 @@ export default function Header({ view, onReset }: HeaderProps) {
             whileTap={{ scale: 0.98 }}
             aria-label="RIFT Home"
           >
-            <div className="w-8 h-8 rounded-lg border border-white/20 flex items-center justify-center group-hover:border-white/40 transition-all duration-300">
-              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-white">
+            <div className="w-8 h-8 rounded-lg border border-border flex items-center justify-center group-hover:border-border-hover transition-all duration-300">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-text-primary">
                 <path d="M3 2L8 14L13 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 <path d="M5 8H11" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
               </svg>
             </div>
-            <span className="headline-compressed text-lg text-white tracking-wider">
+            <span className="headline-condensed text-lg text-text-primary tracking-wider">
               RIFT
             </span>
           </motion.button>
@@ -75,10 +75,10 @@ export default function Header({ view, onReset }: HeaderProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-white/10"
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border"
             >
               <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-              <span className="text-xs text-white/60 font-medium">Secure</span>
+              <span className="text-xs text-text-secondary font-medium">Secure</span>
             </motion.div>
           </div>
         </div>

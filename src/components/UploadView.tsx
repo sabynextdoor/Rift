@@ -10,15 +10,15 @@ interface UploadViewProps {
 }
 
 function getFileIcon(type: string) {
-  if (type.startsWith('image/')) return <Image size={18} className="text-blue-500" />;
-  if (type.startsWith('video/')) return <Film size={18} className="text-purple-500" />;
-  if (type.startsWith('audio/')) return <Music size={18} className="text-pink-500" />;
-  if (type.includes('zip') || type.includes('rar') || type.includes('tar')) return <Archive size={18} className="text-yellow-500" />;
-  if (type.includes('pdf')) return <FileText size={18} className="text-red-500" />;
-  if (type.includes('word') || type.includes('document')) return <FileText size={18} className="text-blue-500" />;
-  if (type.includes('sheet') || type.includes('excel') || type.includes('csv')) return <Table size={18} className="text-green-500" />;
-  if (type.includes('presentation') || type.includes('powerpoint')) return <Presentation size={18} className="text-orange-500" />;
-  return <File size={18} className="text-white/40" />;
+  if (type.startsWith('image/')) return <Image size={18} className="text-blue-400" />;
+  if (type.startsWith('video/')) return <Film size={18} className="text-purple-400" />;
+  if (type.startsWith('audio/')) return <Music size={18} className="text-pink-400" />;
+  if (type.includes('zip') || type.includes('rar') || type.includes('tar')) return <Archive size={18} className="text-yellow-400" />;
+  if (type.includes('pdf')) return <FileText size={18} className="text-red-400" />;
+  if (type.includes('word') || type.includes('document')) return <FileText size={18} className="text-blue-400" />;
+  if (type.includes('sheet') || type.includes('excel') || type.includes('csv')) return <Table size={18} className="text-green-400" />;
+  if (type.includes('presentation') || type.includes('powerpoint')) return <Presentation size={18} className="text-orange-400" />;
+  return <File size={18} className="text-text-muted" />;
 }
 
 function getStatusIcon(status: string) {
@@ -39,25 +39,23 @@ export default function UploadView({ files, onCancel }: UploadViewProps) {
   return (
     <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-20">
       <div className="relative z-10 w-full max-w-xl mx-auto">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.6 }}
           className="text-center mb-10"
         >
           <div className="section-eyebrow mb-4">
             {isComplete ? 'Transfer Complete' : 'Uploading'}
           </div>
-          <h2 className="headline-compressed text-white" style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
+          <h2 className="headline-condensed text-text-primary" style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
             {isComplete ? 'FILES SECURED' : 'SENDING FILES'}
           </h2>
-          <p className="text-white/50 text-sm mt-3">
+          <p className="text-text-muted text-sm mt-3">
             {formatFileSize(totalSize)} • {files.length} file{files.length > 1 ? 's' : ''}
           </p>
         </motion.div>
 
-        {/* Overall Progress */}
         {!isComplete && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -66,8 +64,8 @@ export default function UploadView({ files, onCancel }: UploadViewProps) {
             className="mb-8"
           >
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm text-white/60">{completedFiles} of {files.length} files</span>
-              <span className="text-sm text-white font-medium">{Math.round(totalProgress)}%</span>
+              <span className="text-sm text-text-secondary">{completedFiles} of {files.length} files</span>
+              <span className="text-sm text-text-primary font-medium">{Math.round(totalProgress)}%</span>
             </div>
             <div className="progress-bar h-2.5">
               <motion.div
@@ -80,12 +78,11 @@ export default function UploadView({ files, onCancel }: UploadViewProps) {
           </motion.div>
         )}
 
-        {/* File List - Haze card */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3, duration: 0.6 }}
-          className="haze-card space-y-2"
+          className="glass-card-elevated p-4 space-y-2"
         >
           {files.map((file, index) => (
             <motion.div
@@ -93,66 +90,36 @@ export default function UploadView({ files, onCancel }: UploadViewProps) {
               initial={{ opacity: 0, x: -30 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.3 + index * 0.08, type: 'spring', stiffness: 200 }}
-              className="flex items-center gap-3 p-3 rounded-lg bg-white border border-black/5"
+              className="flex items-center gap-3 p-3 rounded-lg bg-surface-2/50 border border-border"
             >
-              <div className="flex-shrink-0">
-                {getFileIcon(file.type)}
-              </div>
-
+              <div className="flex-shrink-0">{getFileIcon(file.type)}</div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm text-ink truncate">{file.name}</p>
+                <p className="text-sm text-text-primary truncate">{file.name}</p>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="text-xs text-ink/50">{formatFileSize(file.size)}</span>
-                  {file.status === 'UPLOADING' && (
-                    <span className="text-xs text-violet-bright">{Math.round(file.progress)}%</span>
-                  )}
-                  {file.status === 'READY' && (
-                    <span className="text-xs text-success">Complete</span>
-                  )}
-                  {file.status === 'FAILED' && (
-                    <span className="text-xs text-error">Failed</span>
-                  )}
+                  <span className="text-xs text-text-muted">{formatFileSize(file.size)}</span>
+                  {file.status === 'UPLOADING' && <span className="text-xs text-violet-bright">{Math.round(file.progress)}%</span>}
+                  {file.status === 'READY' && <span className="text-xs text-success">Complete</span>}
+                  {file.status === 'FAILED' && <span className="text-xs text-error">Failed</span>}
                 </div>
-
-                {/* Individual progress bar */}
                 {(file.status === 'UPLOADING' || file.status === 'PROCESSING') && (
                   <div className="progress-bar h-1 mt-2">
-                    <motion.div
-                      className="progress-fill h-full"
-                      animate={{ width: `${file.progress}%` }}
-                      transition={{ duration: 0.2 }}
-                    />
+                    <motion.div className="progress-fill h-full" animate={{ width: `${file.progress}%` }} transition={{ duration: 0.2 }} />
                   </div>
                 )}
               </div>
-
-              <div className="flex-shrink-0">
-                {getStatusIcon(file.status)}
-              </div>
+              <div className="flex-shrink-0">{getStatusIcon(file.status)}</div>
             </motion.div>
           ))}
         </motion.div>
 
-        {/* Cancel Button */}
         {!isComplete && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="text-center mt-6"
-          >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={onCancel}
-              className="btn-ghost text-sm"
-            >
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4 }} className="text-center mt-6">
+            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onCancel} className="btn-ghost text-sm">
               Cancel Upload
             </motion.button>
           </motion.div>
         )}
 
-        {/* Success animation */}
         {isComplete && (
           <motion.div
             initial={{ opacity: 0, scale: 0.8 }}
@@ -160,14 +127,10 @@ export default function UploadView({ files, onCancel }: UploadViewProps) {
             transition={{ delay: 0.3, type: 'spring', stiffness: 200 }}
             className="text-center mt-8"
           >
-            <motion.div
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-              className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-violet/10 border border-violet/20 mb-4"
-            >
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-violet/5 border border-violet/10 mb-4">
               <CheckCircle2 size={36} className="text-violet-bright" />
-            </motion.div>
-            <p className="text-white/60 text-sm">Preparing your transfer link...</p>
+            </div>
+            <p className="text-text-secondary text-sm">Preparing your transfer link...</p>
           </motion.div>
         )}
       </div>

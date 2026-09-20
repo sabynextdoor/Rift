@@ -17,7 +17,6 @@ export default function ReadyView({ transfer, onNewTransfer }: ReadyViewProps) {
 
   if (!transfer) return null;
 
-  // Build the transfer URL with encoded data (works across browsers/devices)
   const transferUrl = getTransferUrl(transfer);
 
   const handleCopy = async () => {
@@ -26,10 +25,8 @@ export default function ReadyView({ transfer, onNewTransfer }: ReadyViewProps) {
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     } catch {
-      // Fallback for older browsers
       if (inputRef.current) {
         inputRef.current.select();
-        inputRef.current.setSelectionRange(0, 99999);
         document.execCommand('copy');
         setCopied(true);
         setTimeout(() => setCopied(false), 2500);
@@ -46,7 +43,6 @@ export default function ReadyView({ transfer, onNewTransfer }: ReadyViewProps) {
           url: transferUrl,
         });
       } catch {
-        // User cancelled or not supported
         handleCopy();
       }
     } else {
@@ -60,55 +56,50 @@ export default function ReadyView({ transfer, onNewTransfer }: ReadyViewProps) {
 
   return (
     <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-20">
-      {/* Ambient glow */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-violet/5 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-violet/3 rounded-full blur-[150px] pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-2xl mx-auto">
-        {/* Success Header */}
         <motion.div
-          initial={{ opacity: 0, y: 30, rotateX: 8 }}
-          animate={{ opacity: 1, y: 0, rotateX: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
           className="text-center mb-10"
-          style={{ perspective: '1000px' }}
         >
           <motion.div
-            initial={{ scale: 0, rotate: -180 }}
-            animate={{ scale: 1, rotate: 0 }}
-            transition={{ type: 'spring', delay: 0.2, stiffness: 200 }}
-            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-violet/10 border border-violet/20 mb-6 glow-violet"
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ type: 'spring', delay: 0.2 }}
+            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-violet/5 border border-violet/10 mb-6"
           >
             <CheckCircle2 size={36} className="text-violet-bright" />
           </motion.div>
 
           <div className="section-eyebrow mb-3">Transfer Ready</div>
-          <h2 className="headline-compressed text-white mb-2" style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
+          <h2 className="headline-condensed text-text-primary mb-2" style={{ fontSize: 'clamp(2.5rem, 6vw, 5rem)' }}>
             LINK READY
           </h2>
-          <p className="text-white/50 text-sm">
+          <p className="text-text-muted text-sm">
             {transfer.files.length} file{transfer.files.length > 1 ? 's' : ''} • {formatFileSize(transfer.totalSize)}
           </p>
         </motion.div>
 
-        {/* Link Card */}
         <motion.div
-          initial={{ opacity: 0, y: 30, rotateX: 6 }}
-          animate={{ opacity: 1, y: 0, rotateX: 0 }}
-          transition={{ delay: 0.3, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="glass-card-elevated rounded-2xl p-6 mb-6"
-          style={{ transformStyle: 'preserve-3d' }}
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.6 }}
+          className="glass-card-elevated p-6 mb-6"
         >
-          <label className="text-xs text-fog font-medium uppercase tracking-wider mb-3 block">
+          <label className="text-xs text-text-muted font-medium uppercase tracking-wider mb-3 block">
             Transfer Link
           </label>
 
-          <div className="flex items-center gap-2 p-3 rounded-xl bg-surface-1/50 border border-glass-border">
+          <div className="flex items-center gap-2 p-3 rounded-lg bg-surface-2/50 border border-border">
             <input
               ref={inputRef}
               type="text"
               readOnly
               value={transferUrl}
-              className="flex-1 bg-transparent text-sm text-frost font-mono truncate outline-none"
+              className="flex-1 bg-transparent text-sm text-text-primary font-mono truncate outline-none"
               onClick={(e) => (e.target as HTMLInputElement).select()}
             />
             <motion.button
@@ -122,24 +113,12 @@ export default function ReadyView({ transfer, onNewTransfer }: ReadyViewProps) {
             >
               <AnimatePresence mode="wait">
                 {copied ? (
-                  <motion.span
-                    key="copied"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    className="flex items-center gap-2"
-                  >
+                  <motion.span key="copied" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
                     <Check size={14} />
                     <span>Copied!</span>
                   </motion.span>
                 ) : (
-                  <motion.span
-                    key="copy"
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    className="flex items-center gap-2"
-                  >
+                  <motion.span key="copy" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
                     <Copy size={14} />
                     <span>Copy</span>
                   </motion.span>
@@ -148,15 +127,9 @@ export default function ReadyView({ transfer, onNewTransfer }: ReadyViewProps) {
             </motion.button>
           </div>
 
-          {/* Success toast */}
           <AnimatePresence>
             {copied && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                className="mt-3 text-center"
-              >
+              <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="mt-3 text-center">
                 <span className="text-xs text-success flex items-center justify-center gap-1.5">
                   <Check size={12} />
                   Link copied to clipboard
@@ -166,147 +139,75 @@ export default function ReadyView({ transfer, onNewTransfer }: ReadyViewProps) {
           </AnimatePresence>
         </motion.div>
 
-        {/* Actions */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
-          className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6"
-        >
-          <motion.button
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleShare}
-            className="flex flex-col items-center gap-2 p-4 rounded-xl glass-card hover:bg-glass-fill-hover transition-colors"
-          >
-            <Share2 size={20} className="text-frost" />
-            <span className="text-xs text-moon">Share</span>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
+          <motion.button whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }} onClick={handleShare} className="flex flex-col items-center gap-2 p-4 rounded-xl glass-card hover:bg-white/[0.03] transition-colors">
+            <Share2 size={20} className="text-text-primary" />
+            <span className="text-xs text-text-secondary">Share</span>
           </motion.button>
 
-          <motion.button
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => setShowQR(!showQR)}
-            className="flex flex-col items-center gap-2 p-4 rounded-xl glass-card hover:bg-glass-fill-hover transition-colors"
-          >
-            <QrCode size={20} className="text-frost" />
-            <span className="text-xs text-moon">QR Code</span>
+          <motion.button whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }} onClick={() => setShowQR(!showQR)} className="flex flex-col items-center gap-2 p-4 rounded-xl glass-card hover:bg-white/[0.03] transition-colors">
+            <QrCode size={20} className="text-text-primary" />
+            <span className="text-xs text-text-secondary">QR Code</span>
           </motion.button>
 
-          <motion.button
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handlePreview}
-            className="flex flex-col items-center gap-2 p-4 rounded-xl glass-card hover:bg-glass-fill-hover transition-colors"
-          >
-            <ExternalLink size={20} className="text-frost" />
-            <span className="text-xs text-moon">Preview</span>
+          <motion.button whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }} onClick={handlePreview} className="flex flex-col items-center gap-2 p-4 rounded-xl glass-card hover:bg-white/[0.03] transition-colors">
+            <ExternalLink size={20} className="text-text-primary" />
+            <span className="text-xs text-text-secondary">Preview</span>
           </motion.button>
 
-          <motion.button
-            whileHover={{ scale: 1.05, y: -2 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={onNewTransfer}
-            className="flex flex-col items-center gap-2 p-4 rounded-xl glass-card hover:bg-glass-fill-hover transition-colors group"
-          >
-            <Trash2 size={20} className="text-frost group-hover:text-error transition-colors" />
-            <span className="text-xs text-moon">Delete</span>
+          <motion.button whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }} onClick={onNewTransfer} className="flex flex-col items-center gap-2 p-4 rounded-xl glass-card hover:bg-white/[0.03] transition-colors group">
+            <Trash2 size={20} className="text-text-primary group-hover:text-error transition-colors" />
+            <span className="text-xs text-text-secondary">Delete</span>
           </motion.button>
         </motion.div>
 
-        {/* QR Code */}
         <AnimatePresence>
           {showQR && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, rotateX: 10 }}
-              animate={{ opacity: 1, scale: 1, rotateX: 0 }}
-              exit={{ opacity: 0, scale: 0.9, rotateX: -10 }}
-              transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-              className="glass-card-elevated rounded-2xl p-8 mb-6 text-center"
-              style={{ transformStyle: 'preserve-3d' }}
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="glass-card-elevated p-8 mb-6 text-center"
             >
-              <div className="inline-block p-4 bg-white rounded-xl mb-4 shadow-lg shadow-violet/10">
-                <QRCodeSVG
-                  value={transferUrl}
-                  size={180}
-                  level="M"
-                  bgColor="#ffffff"
-                  fgColor="#030308"
-                />
+              <div className="inline-block p-4 bg-surface-2 rounded-xl mb-4">
+                <QRCodeSVG value={transferUrl} size={180} level="M" bgColor="#1a1a1a" fgColor="#e5e5e5" />
               </div>
-              <p className="text-sm text-moon">Scan to open transfer link</p>
+              <p className="text-sm text-text-secondary">Scan to open transfer link</p>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Transfer Details */}
         <motion.div
-          initial={{ opacity: 0, y: 20, rotateX: 4 }}
-          animate={{ opacity: 1, y: 0, rotateX: 0 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.6 }}
-          className="glass-card rounded-2xl p-6"
-          style={{ transformStyle: 'preserve-3d' }}
+          className="glass-card p-6"
         >
-          <h3 className="text-sm font-medium text-frost mb-5">Transfer Details</h3>
-
+          <h3 className="text-sm font-medium text-text-primary mb-5">Transfer Details</h3>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2 text-sm text-fog">
-                <Clock size={14} />
-                Expires
-              </span>
-              <span className="text-sm text-frost font-medium">
-                {formatRelativeTime(transfer.expiresAt)}
+              <span className="flex items-center gap-2 text-sm text-text-secondary"><Clock size={14} /> Expires</span>
+              <span className="text-sm text-text-primary font-medium">{formatRelativeTime(transfer.expiresAt)}</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="flex items-center gap-2 text-sm text-text-secondary"><Download size={14} /> Downloads</span>
+              <span className="text-sm text-text-primary font-medium">
+                {transfer.config.downloadLimit === 'unlimited' ? 'Unlimited' : `${transfer.downloadCount} / ${transfer.config.downloadLimit}`}
               </span>
             </div>
-
             <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2 text-sm text-fog">
-                <Download size={14} />
-                Downloads
-              </span>
-              <span className="text-sm text-frost font-medium">
-                {transfer.config.downloadLimit === 'unlimited'
-                  ? 'Unlimited'
-                  : `${transfer.downloadCount} / ${transfer.config.downloadLimit}`}
-              </span>
+              <span className="flex items-center gap-2 text-sm text-text-secondary"><Lock size={14} /> Password</span>
+              <span className="text-sm text-text-primary font-medium">{transfer.config.password ? 'Protected' : 'None'}</span>
             </div>
-
             <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2 text-sm text-fog">
-                <Lock size={14} />
-                Password
-              </span>
-              <span className="text-sm text-frost font-medium">
-                {transfer.config.password ? 'Protected' : 'None'}
-              </span>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2 text-sm text-fog">
-                <File size={14} />
-                Files
-              </span>
-              <span className="text-sm text-frost font-medium">
-                {transfer.files.length} file{transfer.files.length > 1 ? 's' : ''}
-              </span>
+              <span className="flex items-center gap-2 text-sm text-text-secondary"><File size={14} /> Files</span>
+              <span className="text-sm text-text-primary font-medium">{transfer.files.length} file{transfer.files.length > 1 ? 's' : ''}</span>
             </div>
           </div>
         </motion.div>
 
-        {/* New Transfer */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="text-center mt-8"
-        >
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={onNewTransfer}
-            className="btn-ghost"
-          >
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="text-center mt-8">
+          <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} onClick={onNewTransfer} className="btn-ghost">
             Send another transfer
           </motion.button>
         </motion.div>
