@@ -18,7 +18,7 @@ function getFileIcon(type: string) {
   if (type.includes('word') || type.includes('document')) return <FileText size={18} className="text-blue-400" />;
   if (type.includes('sheet') || type.includes('excel') || type.includes('csv')) return <Table size={18} className="text-green-400" />;
   if (type.includes('presentation') || type.includes('powerpoint')) return <Presentation size={18} className="text-orange-400" />;
-  return <File size={18} className="text-text-tertiary" />;
+  return <File size={18} className="text-fog" />;
 }
 
 export default function RecipientView({ transfer, notFound }: RecipientViewProps) {
@@ -30,28 +30,25 @@ export default function RecipientView({ transfer, notFound }: RecipientViewProps
 
   if (!transfer || notFound) {
     return (
-      <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-20">
-        <div className="absolute inset-0 bg-grid opacity-30" />
-        <div className="absolute inset-0 bg-gradient-radial" />
-        
+      <section className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 pt-24 pb-20">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center relative z-10"
+          className="text-center"
         >
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', delay: 0.2 }}
-            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-error/10 border border-error/20 mb-6"
+            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-danger/10 border border-danger/20 mb-6"
           >
-            <AlertTriangle size={32} className="text-error" />
+            <AlertTriangle size={32} className="text-danger" />
           </motion.div>
-          <h2 className="text-hero text-text-primary mb-3">Transfer Not Found</h2>
-          <p className="text-body text-text-secondary max-w-sm mx-auto mb-6">
+          <h2 className="premium-display mb-3">Transfer Not Found</h2>
+          <p className="premium-subtitle max-w-sm mx-auto mb-6">
             This transfer link may be invalid or the data could not be decoded. Please check the link or ask the sender to create a new transfer.
           </p>
-          <a href={window.location.pathname} className="btn btn-primary inline-block">
+          <a href={window.location.pathname} className="premium-button-primary inline-block">
             Go to RIFT
           </a>
         </motion.div>
@@ -62,28 +59,25 @@ export default function RecipientView({ transfer, notFound }: RecipientViewProps
   const isExpired = new Date() > new Date(transfer.expiresAt);
   if (isExpired) {
     return (
-      <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-20">
-        <div className="absolute inset-0 bg-grid opacity-30" />
-        <div className="absolute inset-0 bg-gradient-radial" />
-        
+      <section className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 pt-24 pb-20">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center relative z-10"
+          className="text-center"
         >
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', delay: 0.2 }}
-            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-warning/10 border border-warning/20 mb-6"
+            className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-warn/10 border border-warn/20 mb-6"
           >
-            <Clock size={32} className="text-warning" />
+            <Clock size={32} className="text-warn" />
           </motion.div>
-          <h2 className="text-hero text-text-primary mb-3">Transfer Expired</h2>
-          <p className="text-body text-text-secondary max-w-sm mx-auto mb-6">
+          <h2 className="premium-display mb-3">Transfer Expired</h2>
+          <p className="premium-subtitle max-w-sm mx-auto mb-6">
             This transfer has expired and all files have been permanently removed from storage.
           </p>
-          <a href={window.location.pathname} className="btn btn-primary inline-block">
+          <a href={window.location.pathname} className="premium-button-primary inline-block">
             Go to RIFT
           </a>
         </motion.div>
@@ -119,9 +113,8 @@ export default function RecipientView({ transfer, notFound }: RecipientViewProps
 
   if (!isAuthenticated) {
     return (
-      <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-20">
-        <div className="absolute inset-0 bg-grid opacity-30" />
-        <div className="absolute inset-0 bg-gradient-radial" />
+      <section className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 pt-24 pb-20">
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-accent/3 rounded-full blur-[120px] pointer-events-none" />
         
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -129,17 +122,17 @@ export default function RecipientView({ transfer, notFound }: RecipientViewProps
           transition={{ duration: 0.6 }}
           className="relative z-10 w-full max-w-sm mx-auto"
         >
-          <div className="card-elevated text-center">
+          <div className="premium-panel-raised p-8 text-center">
             <motion.div
               initial={{ scale: 0, rotate: -90 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: 'spring', delay: 0.2 }}
               className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/10 border border-accent/20 mb-6"
             >
-              <Lock size={28} className="text-accent-bright" />
+              <Lock size={28} className="text-accent" />
             </motion.div>
-            <h2 className="text-heading text-text-primary mb-2">Password Required</h2>
-            <p className="text-body-sm text-text-secondary mb-6">
+            <h2 className="premium-section-title mb-2">Password Required</h2>
+            <p className="text-sm text-fog mb-6">
               This transfer is password protected. Enter the password to access the files.
             </p>
             <form onSubmit={handlePasswordSubmit}>
@@ -148,7 +141,7 @@ export default function RecipientView({ transfer, notFound }: RecipientViewProps
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter password"
-                className="input mb-3 text-center"
+                className="premium-input mb-3 text-center"
                 autoFocus
               />
               <AnimatePresence>
@@ -157,7 +150,7 @@ export default function RecipientView({ transfer, notFound }: RecipientViewProps
                     initial={{ opacity: 0, y: -5 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -5 }}
-                    className="text-caption text-error mb-3"
+                    className="text-xs text-danger mb-3"
                   >
                     {passwordError}
                   </motion.p>
@@ -167,7 +160,7 @@ export default function RecipientView({ transfer, notFound }: RecipientViewProps
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 type="submit"
-                className="btn btn-primary w-full"
+                className="premium-button-primary w-full"
               >
                 Unlock Transfer
               </motion.button>
@@ -179,9 +172,8 @@ export default function RecipientView({ transfer, notFound }: RecipientViewProps
   }
 
   return (
-    <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-24 pb-20">
-      <div className="absolute inset-0 bg-grid opacity-30" />
-      <div className="absolute inset-0 bg-gradient-radial" />
+    <section className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 pt-24 pb-20">
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/3 rounded-full blur-[150px] pointer-events-none" />
 
       <div className="relative z-10 w-full max-w-2xl mx-auto">
         <motion.div
@@ -194,14 +186,14 @@ export default function RecipientView({ transfer, notFound }: RecipientViewProps
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ type: 'spring', delay: 0.2 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-success/10 border border-success/20 mb-5"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-ok/10 border border-ok/20 mb-5"
           >
-            <Shield size={14} className="text-success" />
-            <span className="text-caption text-success font-medium">Verified Transfer</span>
+            <Shield size={14} className="text-ok" />
+            <span className="text-xs text-ok font-medium">Verified Transfer</span>
           </motion.div>
 
-          <h2 className="text-hero text-text-primary mb-3">Files ready for download</h2>
-          <p className="text-body text-text-secondary">
+          <h2 className="premium-display mb-3">Files ready for download</h2>
+          <p className="premium-subtitle">
             {transfer.files.length} file{transfer.files.length > 1 ? 's' : ''} • {formatFileSize(transfer.totalSize)} • Expires {formatRelativeTime(transfer.expiresAt)}
           </p>
         </motion.div>
@@ -210,7 +202,7 @@ export default function RecipientView({ transfer, notFound }: RecipientViewProps
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
-          className="card-elevated mb-6"
+          className="premium-panel-raised p-4 mb-6"
         >
           <div className="space-y-2">
             {transfer.files.map((file, index) => (
@@ -219,25 +211,25 @@ export default function RecipientView({ transfer, notFound }: RecipientViewProps
                 initial={{ opacity: 0, x: -30 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.3 + index * 0.08, type: 'spring', stiffness: 200 }}
-                className="flex items-center gap-3 p-3 rounded-lg bg-surface-2/50 border border-border group hover:border-accent/20 transition-colors"
+                className="flex items-center gap-3 p-3 rounded-lg bg-surface2/50 border border-hairline group hover:border-accent/20 transition-colors"
               >
                 <div className="flex-shrink-0">
                   {getFileIcon(file.type)}
                 </div>
 
                 <div className="flex-1 min-w-0">
-                  <p className="text-body-sm text-text-primary truncate">{file.name}</p>
-                  <p className="text-caption text-text-tertiary">{formatFileSize(file.size)}</p>
+                  <p className="text-sm text-frost truncate">{file.name}</p>
+                  <p className="text-xs text-fog">{formatFileSize(file.size)}</p>
                 </div>
 
                 <motion.button
                   whileTap={{ scale: 0.9 }}
                   onClick={() => handleDownload(file.id)}
                   disabled={downloading !== null}
-                  className={`flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-lg text-body-sm font-medium transition-all ${
+                  className={`flex-shrink-0 flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                     downloadedFiles.has(file.id)
-                      ? 'bg-success/10 border border-success/20 text-success'
-                      : 'bg-accent/10 border border-accent/20 text-accent-bright hover:bg-accent/20'
+                      ? 'bg-ok/10 border border-ok/20 text-ok'
+                      : 'bg-accent/10 border border-accent/20 text-accent hover:bg-accent/20'
                   } disabled:opacity-50`}
                 >
                   {downloading === file.id ? (
@@ -273,7 +265,7 @@ export default function RecipientView({ transfer, notFound }: RecipientViewProps
               whileTap={{ scale: 0.97 }}
               onClick={handleDownloadAll}
               disabled={downloading !== null}
-              className="btn btn-primary inline-flex items-center gap-2"
+              className="premium-button-primary inline-flex items-center gap-2"
             >
               {downloading === 'all' ? (
                 <>
@@ -301,7 +293,7 @@ export default function RecipientView({ transfer, notFound }: RecipientViewProps
           transition={{ delay: 0.7 }}
           className="text-center mt-10"
         >
-          <p className="text-caption text-text-tertiary flex items-center justify-center gap-1.5">
+          <p className="text-xs text-fog flex items-center justify-center gap-1.5">
             <Shield size={12} />
             This transfer is scanned for malware and expires automatically
           </p>
