@@ -8,8 +8,6 @@ interface Particle {
   size: number;
   opacity: number;
   color: string;
-  life: number;
-  maxLife: number;
 }
 
 export default function ParticleField() {
@@ -32,27 +30,23 @@ export default function ParticleField() {
     resize();
     window.addEventListener('resize', resize);
 
-    // Premium violet color palette
+    // Subtle violet particles
     const colors = [
-      'rgba(124, 92, 252, 0.5)',   // violet
-      'rgba(139, 111, 255, 0.4)',  // violet bright
-      'rgba(167, 139, 250, 0.3)',  // violet light
-      'rgba(90, 61, 232, 0.3)',    // violet deep
-      'rgba(216, 236, 248, 0.15)', // ice
-      'rgba(186, 215, 247, 0.1)',  // frost
+      'rgba(124, 92, 252, 0.15)',
+      'rgba(139, 111, 255, 0.12)',
+      'rgba(167, 139, 250, 0.1)',
+      'rgba(90, 61, 232, 0.08)',
     ];
 
-    const PARTICLE_COUNT = 50;
+    const PARTICLE_COUNT = 30; // Reduced count for subtlety
     particlesRef.current = Array.from({ length: PARTICLE_COUNT }, () => ({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.4,
-      vy: (Math.random() - 0.5) * 0.4,
-      size: Math.random() * 2.5 + 0.5,
-      opacity: Math.random() * 0.6 + 0.1,
+      vx: (Math.random() - 0.5) * 0.2, // Slower movement
+      vy: (Math.random() - 0.5) * 0.2,
+      size: Math.random() * 1.5 + 0.5, // Smaller particles
+      opacity: Math.random() * 0.3 + 0.1,
       color: colors[Math.floor(Math.random() * colors.length)],
-      life: Math.random() * 1000,
-      maxLife: 800 + Math.random() * 400,
     }));
 
     const handleMouseMove = (e: MouseEvent) => {
@@ -64,50 +58,37 @@ export default function ParticleField() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       particlesRef.current.forEach((particle) => {
-        // Update position
         particle.x += particle.vx;
         particle.y += particle.vy;
-        particle.life++;
 
         // Wrap around
-        if (particle.x < -10) particle.x = canvas.width + 10;
-        if (particle.x > canvas.width + 10) particle.x = -10;
-        if (particle.y < -10) particle.y = canvas.height + 10;
-        if (particle.y > canvas.height + 10) particle.y = -10;
+        if (particle.x < 0) particle.x = canvas.width;
+        if (particle.x > canvas.width) particle.x = 0;
+        if (particle.y < 0) particle.y = canvas.height;
+        if (particle.y > canvas.height) particle.y = 0;
 
-        // Mouse interaction - gentle attraction/repulsion
+        // Subtle mouse interaction
         const dx = particle.x - mouseRef.current.x;
         const dy = particle.y - mouseRef.current.y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 200 && dist > 0) {
-          const force = (200 - dist) / 200 * 0.015;
+        if (dist < 150 && dist > 0) {
+          const force = (150 - dist) / 150 * 0.005; // Very subtle
           particle.vx += (dx / dist) * force;
           particle.vy += (dy / dist) * force;
         }
 
         // Dampen velocity
-        particle.vx *= 0.995;
-        particle.vy *= 0.995;
+        particle.vx *= 0.99;
+        particle.vy *= 0.99;
 
-        // Pulsing opacity
-        const pulseOpacity = particle.opacity * (0.5 + 0.5 * Math.sin(particle.life * 0.01));
-
-        // Draw particle with glow
+        // Draw particle
         ctx.beginPath();
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-        ctx.fillStyle = particle.color.replace(/[\d.]+\)$/, `${pulseOpacity})`);
+        ctx.fillStyle = particle.color;
         ctx.fill();
-
-        // Glow effect for larger particles
-        if (particle.size > 1.5) {
-          ctx.beginPath();
-          ctx.arc(particle.x, particle.y, particle.size * 3, 0, Math.PI * 2);
-          ctx.fillStyle = particle.color.replace(/[\d.]+\)$/, `${pulseOpacity * 0.1})`);
-          ctx.fill();
-        }
       });
 
-      // Draw connections between nearby particles
+      // Draw very subtle connections
       for (let i = 0; i < particlesRef.current.length; i++) {
         for (let j = i + 1; j < particlesRef.current.length; j++) {
           const p1 = particlesRef.current[i];
@@ -116,8 +97,8 @@ export default function ParticleField() {
           const dy = p1.y - p2.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
-          if (dist < 150) {
-            const opacity = (1 - dist / 150) * 0.08;
+          if (dist < 100) {
+            const opacity = (1 - dist / 100) * 0.03; // Very subtle
             ctx.beginPath();
             ctx.moveTo(p1.x, p1.y);
             ctx.lineTo(p2.x, p2.y);
@@ -143,7 +124,7 @@ export default function ParticleField() {
   return (
     <canvas
       ref={canvasRef}
-      className="fixed inset-0 pointer-events-none z-0 opacity-70"
+      className="fixed inset-0 pointer-events-none z-0 opacity-40"
       aria-hidden="true"
     />
   );

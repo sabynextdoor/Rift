@@ -1,4 +1,4 @@
-import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
 import { AppView } from '../types';
 
 interface HeaderProps {
@@ -8,25 +8,25 @@ interface HeaderProps {
 
 export default function Header({ view, onReset }: HeaderProps) {
   const { scrollY } = useScroll();
-  const headerBg = useSpring(useTransform(scrollY, [0, 100], [0, 0.9]), { stiffness: 100, damping: 30 });
-  const headerBlur = useSpring(useTransform(scrollY, [0, 100], [0, 20]), { stiffness: 100, damping: 30 });
-  const headerBorderOpacity = useSpring(useTransform(scrollY, [0, 100], [0, 1]), { stiffness: 100, damping: 30 });
+  const headerBg = useTransform(scrollY, [0, 100], ['rgba(5, 5, 5, 0)', 'rgba(5, 5, 5, 0.8)']);
+  const headerBlur = useTransform(scrollY, [0, 100], ['blur(0px)', 'blur(20px)']);
+  const headerBorder = useTransform(scrollY, [0, 100], ['rgba(255, 255, 255, 0)', 'rgba(255, 255, 255, 0.08)']);
 
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.1 }}
+      transition={{ duration: 0.5 }}
       className="fixed top-0 left-0 right-0 z-50"
     >
       <motion.div
         className="mx-auto max-w-7xl px-6 py-4"
         style={{
-          backgroundColor: useTransform(headerBg, (v) => `rgba(3, 3, 8, ${v})`),
-          backdropFilter: useTransform(headerBlur, (v) => `blur(${v}px)`),
-          WebkitBackdropFilter: useTransform(headerBlur, (v) => `blur(${v}px)`),
-          borderBottomWidth: '1px',
-          borderBottomColor: useTransform(headerBorderOpacity, (v) => `rgba(186, 215, 247, ${v * 0.06})`),
+          backgroundColor: headerBg,
+          backdropFilter: headerBlur,
+          WebkitBackdropFilter: headerBlur,
+          borderBottom: '1px solid',
+          borderBottomColor: headerBorder,
         }}
       >
         <div className="flex items-center justify-between">
@@ -38,16 +38,13 @@ export default function Header({ view, onReset }: HeaderProps) {
             whileTap={{ scale: 0.98 }}
             aria-label="RIFT Home"
           >
-            <div className="relative">
-              <div className="w-8 h-8 rounded-lg bg-violet/20 border border-violet/30 flex items-center justify-center group-hover:bg-violet/30 transition-colors">
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-violet-bright">
-                  <path d="M3 2L8 14L13 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M5 8H11" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                </svg>
-              </div>
-              <div className="absolute inset-0 rounded-lg bg-violet/10 blur-md group-hover:bg-violet/20 transition-colors" />
+            <div className="w-8 h-8 rounded-lg bg-accent/10 border border-accent/20 flex items-center justify-center group-hover:bg-accent/20 transition-colors">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" className="text-accent-bright">
+                <path d="M3 2L8 14L13 2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M5 8H11" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+              </svg>
             </div>
-            <span className="text-lg font-display font-semibold tracking-tight text-frost">
+            <span className="text-lg font-semibold tracking-tight text-text-primary">
               RIFT
             </span>
           </motion.button>
@@ -56,8 +53,8 @@ export default function Header({ view, onReset }: HeaderProps) {
           <nav className="hidden md:flex items-center gap-1">
             {view === 'landing' && (
               <>
-                <a href="#features" className="btn-ghost text-xs py-2 px-4">Features</a>
-                <a href="#security" className="btn-ghost text-xs py-2 px-4">Security</a>
+                <a href="#features" className="btn btn-ghost text-caption">Features</a>
+                <a href="#security" className="btn btn-ghost text-caption">Security</a>
               </>
             )}
           </nav>
@@ -69,7 +66,7 @@ export default function Header({ view, onReset }: HeaderProps) {
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
                 onClick={onReset}
-                className="btn-ghost text-xs py-2 px-4"
+                className="btn btn-secondary text-caption"
               >
                 New Transfer
               </motion.button>
@@ -78,10 +75,10 @@ export default function Header({ view, onReset }: HeaderProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-glass-fill border border-glass-border"
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-2/50 border border-border"
             >
               <div className="w-1.5 h-1.5 rounded-full bg-success animate-pulse" />
-              <span className="text-xs text-moon font-medium">Secure</span>
+              <span className="text-caption text-text-secondary font-medium">Secure</span>
             </motion.div>
           </div>
         </div>
